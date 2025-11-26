@@ -1,0 +1,89 @@
+﻿@model MezuniyetPlatformu.Web.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Kayıt Ol";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container d-flex align-items-center justify-content-center" style="height: calc(100vh - 100px);">
+
+    <div class="row g-0 shadow-lg rounded-4 overflow-hidden w-100" style="max-height: 850px;">
+
+        <div class="col-lg-5 d-flex flex-column justify-content-center bg-white p-4 overflow-auto">
+            <div class="mx-auto" style="width: 100%; max-width: 400px;">
+
+                <div class="mb-3 text-center">
+                    <h2 class="fw-bold text-dark mb-1">Aramıza Katıl</h2>
+                    <p class="text-muted small mb-0">Kariyer yolculuğuna başlamak için formu doldur.</p>
+                </div>
+
+                <form id="registerForm" method="post" asp-controller="Auth" asp-action="Register">
+                    <div asp-validation-summary="All" class="text-danger mb-2 small" style="font-size: 0.8rem;"></div>
+
+                    <div class="row g-2 mb-2">
+                        <div class="col-md-6 form-floating">
+                            <input asp-for="FirstName" class="form-control bg-light border-0" placeholder="Ad" style="height: 50px;" />
+                            <label asp-for="FirstName" class="small pt-2">Ad</label>
+                        </div>
+                        <div class="col-md-6 form-floating">
+                            <input asp-for="LastName" class="form-control bg-light border-0" placeholder="Soyad" style="height: 50px;" />
+                            <label asp-for="LastName" class="small pt-2">Soyad</label>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input asp-for="Email" class="form-control bg-light border-0" placeholder="name@example.com" style="height: 50px;" />
+                        <label asp-for="Email" class="small pt-2">E-Posta</label>
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input asp-for="Password" class="form-control bg-light border-0" placeholder="Şifre" style="height: 50px;" />
+                        <label asp-for="Password" class="small pt-2">Şifre</label>
+                    </div>
+
+                    <div class="form-floating mb-2">
+                        <input asp-for="ConfirmPassword" class="form-control bg-light border-0" placeholder="Şifre Tekrar" style="height: 50px;" />
+                        <label asp-for="ConfirmPassword" class="small pt-2">Şifre Tekrar</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <select asp-for="UserTypeId" class="form-select bg-light border-0" style="height: 50px; padding-top: 1.2rem;">
+                            <option value="">Seçiniz...</option>
+                            <option value="1">Öğrenci</option>
+                            <option value="2">Mezun</option>
+                            <option value="3">İşveren</option>
+                        </select>
+                        <label asp-for="UserTypeId" class="small pt-2">Kayıt Tipi</label>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button id="registerSubmit" type="submit" class="btn btn-primary rounded-pill py-2 fw-bold shadow-sm" style="background-color: #0a66c2; border: none;">
+                            Kayıt Ol
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <span class="text-muted small">Zaten hesabın var mı?</span>
+                        <a asp-action="Login" class="fw-bold text-decoration-none ms-1 small" style="color: #0a66c2;">Giriş Yap</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-7 d-none d-lg-flex flex-column align-items-center justify-content-center p-5" style="background-color: #f3f2ef;">
+
+            <img src="https://img.freepik.com/free-vector/business-team-brainstorming-discussing-startup-project_74855-6909.jpg"
+                 alt="Kariyer İllüstrasyonu"
+                 class="img-fluid mb-4"
+                 style="max-height: 450px; width: auto; mix-blend-mode: multiply;">
+
+            <div class="text-center px-5">
+                <h2 class="fw-bold text-dark mb-3">Profesyonel Topluluğa Hoş Geldin!</h2>
+                <p class="lead text-muted" style="font-size: 1.1rem;">
+                    İş bul, yeteneklerini geliştir ve networkünü büyüt. Hepsi tek bir platformda.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+</div>  

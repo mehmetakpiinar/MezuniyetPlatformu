@@ -1,0 +1,11 @@
+C:\Users\Mehmet\source\repos\MezuniyetPlatformu\MezuniyetPlatformu.Entities\bin\Debug\net8.0\MezuniyetPlatformu.Entities.deps.json
+C:\Users\Mehmet\source\repos\MezuniyetPlatformu\MezuniyetPlatformu.Entities\bin\Debug\net8.0\MezuniyetPlatformu.Entities.dll
+C:\Users\Mehmet\source\repos\MezuniyetPlatformu\MezuniyetPlatformu.Entities\bin\Debug\net8.0\MezuniyetPlatformu.Entities.pdb
+C:\Users\Mehmet\source\repos\MezuniyetPlatformu\MezuniyetPlatformu.Entities\obj\Debug\net8.0\MezuniyetPlatformu.Entities.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Mehmet\source\repos\MezuniyetPlatformu\MezuniyetPlatformu.Entities\obj\Debug\net8.0\MezuniyetPlatformu.Entities.AssemblyInfoInputs.cache
+C:\Users\Mehmet\source\repos\MezuniyetPlatformu\MezuniyetPlatformu.Entities\obj\Debug\net8.0\MezuniyetPlatformu.Entities.AssemblyInfo.cs
+C:\Users\Mehmet\source\repos\MezuniyetPlatformu\MezuniyetPlatformu.Entities\obj\Debug\net8.0\MezuniyetPlatformu.Entities.csproj.CoreCompileInputs.cache
+C:\Users\Mehmet\source\repos\MezuniyetPlatformu\MezuniyetPlatformu.Entities\obj\Debug\net8.0\MezuniyetPlatformu.Entities.dll
+C:\Users\Mehmet\source\repos\MezuniyetPlatformu\MezuniyetPlatformu.Entities\obj\Debug\net8.0\refint\MezuniyetPlatformu.Entities.dll
+C:\Users\Mehmet\source\repos\MezuniyetPlatformu\MezuniyetPlatformu.Entities\obj\Debug\net8.0\MezuniyetPlatformu.Entities.pdb
+C:\Users\Mehmet\source\repos\MezuniyetPlatformu\MezuniyetPlatformu.Entities\obj\Debug\net8.0\ref\MezuniyetPlatformu.Entities.dll

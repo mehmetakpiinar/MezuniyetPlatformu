@@ -1,0 +1,80 @@
+﻿@model MezuniyetPlatformu.Web.ViewModels.JobPostsViewModel
+@{
+    ViewData["Title"] = Model.Title; // Sayfa başlığı ilanın başlığı olsun
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 class="display-5">@Model.Title</h1>
+
+            <h4 class="text-muted">
+                Şirket Adı (API'den gelmeli) - @(Model.Location ?? "Konum Belirtilmemiş")
+            </h4>
+            <span class="badge bg-primary fs-6">@Model.JobType</span>
+
+            <hr />
+
+            <h3 class="mt-4">İş Tanımı ve Açıklama</h3>
+            <p style="white-space: pre-wrap;">@Model.Description</p>
+
+            <hr />
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                @if (!User.IsInRole("Isveren"))
+                {
+                    <form asp-controller="JobPosts" asp-action="Apply" asp-route-id="@Model.JobPostId" method="post">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            Bu İlana Başvur
+                        </button>
+                    </form>
+
+                    <div class="mt-3">
+                        <a asp-controller="Messages" 
+                           asp-action="Chat" 
+                           asp-route-userId="@Model.EmployerProfile?.UserId" 
+                           class="btn btn-outline-primary btn-lg w-100">
+                            💬 İlan Sahibine Mesaj Gönder
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        İşveren olarak iş ilanlarına başvuramazsınız.
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    Bu ilana başvurabilmek için lütfen
+                    <a asp-controller="Auth" asp-action="Login" class="alert-link">giriş yapın</a>.
+                </div>
+            }
+
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <h5 class="card-header">İlan Bilgileri</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>Yayınlanma Tarihi:</strong> @Model.PublishedDate.ToShortDateString()
+                    </li>
+                    @if (Model.Deadline.HasValue)
+                    {
+                        <li class="list-group-item">
+                            <strong>Son Başvuru:</strong> @Model.Deadline.Value.ToShortDateString()
+                        </li>
+                    }
+                    <li class="list-group-item">
+                        <strong>Durum:</strong> @(Model.IsActive ? "Aktif" : "Pasif")
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

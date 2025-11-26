@@ -1,0 +1,60 @@
+﻿@model List<MezuniyetPlatformu.Web.ViewModels.MessageViewModel>
+@{
+    ViewData["Title"] = "Sohbet";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int otherUserId = ViewBag.OtherUserId;
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Sohbet</h5>
+        </div>
+
+        <div class="card-body" style="height: 400px; overflow-y: auto; background-color: #f8f9fa;" id="chatBox">
+            @if (!Model.Any())
+            {
+                <div class="text-center text-muted mt-5">
+                    <p>Henüz mesaj yok. İlk mesajı sen gönder!</p>
+                </div>
+            }
+            else
+            {
+                @foreach (var msg in Model)
+                {
+                    <div class="d-flex @(msg.IsMyMessage ? "justify-content-end" : "justify-content-start") mb-3">
+                        <div class="card @(msg.IsMyMessage ? "bg-success text-white" : "bg-white text-dark") shadow-sm" style="max-width: 75%;">
+                            <div class="card-body p-2 px-3">
+                                <p class="mb-0">@msg.Content</p>
+                                <small class="@(msg.IsMyMessage ? "text-light" : "text-muted")" style="font-size: 0.7rem;">
+                                    @msg.SentDate.ToLocalTime().ToString("HH:mm")
+                                    @if (msg.IsMyMessage && msg.IsRead)
+                                    {
+                                        <span>(Okundu)</span>
+                                    }
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="card-footer">
+            <form asp-action="Send" method="post" class="d-flex">
+                <input type="hidden" name="recipientUserId" value="@otherUserId" />
+
+                <input type="text" name="content" class="form-control me-2" placeholder="Bir mesaj yazın..." required autocomplete="off" />
+
+                <button type="submit" class="btn btn-primary">
+                    Gönder &rarr;
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    var chatBox = document.getElementById("chatBox");
+    chatBox.scrollTop = chatBox.scrollHeight;
+</script>

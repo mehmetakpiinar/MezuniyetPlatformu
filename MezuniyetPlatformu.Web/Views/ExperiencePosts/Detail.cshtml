@@ -1,0 +1,31 @@
+﻿@model MezuniyetPlatformu.Web.ViewModels.ExperiencePostViewModel
+@{
+    ViewData["Title"] = Model.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="card-title display-6">@Model.Title</h1>
+
+            <h6 class="card-subtitle mb-4 text-muted border-bottom pb-3">
+                <span class="fw-bold text-primary">
+                    @(Model.AuthorUser?.FirstName ?? "Bilinmeyen") @(Model.AuthorUser?.LastName ?? "Kullanıcı")
+                </span>
+                tarafından @Model.CreatedDate.ToLongDateString() tarihinde paylaşıldı.
+            </h6>
+
+            <div class="card-text" style="white-space: pre-wrap; font-size: 1.1rem; line-height: 1.6;">
+                @Model.Content
+            </div>
+        </div>
+
+        <div class="card-footer bg-light">
+            <a asp-action="Index" class="btn btn-secondary">
+                &larr; Listeye Dön
+            </a>
+
+        </div>
+    </div>
+</div>

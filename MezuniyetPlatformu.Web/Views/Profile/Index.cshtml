@@ -1,0 +1,65 @@
+﻿@model MezuniyetPlatformu.Web.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = "Profilim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Profil Bilgilerim</h4>
+                    <a asp-action="Edit" class="btn btn-light btn-sm">
+                        ✏️ Profili Düzenle
+                    </a>
+                </div>
+
+                <div class="card-body text-center">
+                    <img src="@(string.IsNullOrEmpty(Model?.ProfilePhotoURL) ? "https://via.placeholder.com/150" : Model.ProfilePhotoURL)"
+                         class="rounded-circle mb-3" width="150" height="150" style="object-fit: cover;" alt="Profil Fotosu">
+
+                    <h3>@(Model?.User?.FirstName) @(Model?.User?.LastName)</h3>
+                    <p class="text-muted">@Model?.User?.Email</p>
+
+                    <hr />
+
+                    <div class="text-start">
+                        <div class="row mb-2">
+                            <div class="col-sm-4 fw-bold">Bölüm / Program:</div>
+                            <div class="col-sm-8">@(Model?.StudyProgram ?? "-")</div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-sm-4 fw-bold">Mezuniyet Yılı:</div>
+                            <div class="col-sm-8">@(Model?.GraduationYear?.ToString() ?? "-")</div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-sm-4 fw-bold">Hakkımda:</div>
+                            <div class="col-sm-8">@(Model?.About ?? "-")</div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-sm-4 fw-bold">İletişim:</div>
+                            <div class="col-sm-8">@(Model?.PhoneNumber ?? "-")</div>
+                        </div>
+
+                        <div class="mt-4">
+                            @if (!string.IsNullOrEmpty(Model?.LinkedInURL))
+                            {
+                                <a href="@Model.LinkedInURL" target="_blank" class="btn btn-outline-primary btn-sm me-2">LinkedIn</a>
+                            }
+                            @if (!string.IsNullOrEmpty(Model?.GitHubURL))
+                            {
+                                <a href="@Model.GitHubURL" target="_blank" class="btn btn-outline-dark btn-sm">GitHub</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

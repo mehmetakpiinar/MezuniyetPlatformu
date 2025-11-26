@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "MezuniyetPlatformu.API\\MezuniyetPlatformu.API.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "MezuniyetPlatformu.Web\\MezuniyetPlatformu.Web.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

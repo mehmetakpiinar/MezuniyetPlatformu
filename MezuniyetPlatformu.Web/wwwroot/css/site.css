@@ -1,0 +1,149 @@
+/* --- KESÝN ÇÖZÜM: CSS STICKY FOOTER (GRID SYSTEM) --- */
+
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100vh; /* Ekranýn tamamýný kapla */
+    display: flex;
+    flex-direction: column; /* Alt alta dizilim */
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fc;
+    color: #2d3748;
+    padding-top: 80px;
+}
+
+/* Ana Ýçerik Alaný */
+main {
+    flex: 1; /* Büyü ve boþluðu doldur */
+    width: 100%;
+    padding-bottom: 40px; /* Footer ile içerik arasýnda tampon boþluk */
+}
+
+/* --- KRÝTÝK DÜZELTME BURADA --- */
+/* Hem 'footer' etiketini hem de '.footer' sýnýfýný hedefliyoruz */
+footer, .footer {
+    flex-shrink: 0; /* Sýkýþma */
+    position: relative !important; /* Eski 'absolute' ayarýný EZMEK için */
+    bottom: auto !important; /* Eski ayarý sýfýrla */
+    background-color: #fff;
+    width: 100%;
+    padding: 20px 0;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.02);
+    border-top: 1px solid #eaeaea;
+    line-height: normal; /* Varsayýlan satýr yüksekliðini düzelt */
+}
+
+a {
+    text-decoration: none;
+}
+
+/* --- NAVBAR (MENÜ) TASARIMI (SABÝT VE MODERN) --- */
+
+/* 1. Navbar'ý sabitle ve efekt ver */
+.navbar {
+    position: fixed; /* Ekranýn tepesine çivile */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030; /* Diðer her þeyin üstünde dursun */
+    /* Modern Buzlu Cam Efekti */
+    background-color: rgba(255, 255, 255, 0.85) !important; /* %85 Görünür Beyaz */
+    backdrop-filter: blur(12px); /* Arkasýndan geçenleri bulanýklaþtýr */
+    -webkit-backdrop-filter: blur(12px); /* Safari için */
+
+    transition: all 0.3s ease-in-out; /* Yumuþak geçiþler */
+    padding: 1rem 2rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05); /* Çok hafif çizgi */
+}
+
+    /* 2. Aþaðý kaydýrýldýðýnda JS ile eklenecek sýnýf */
+    .navbar.scrolled {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Gölge ekle */
+        background-color: rgba(255, 255, 255, 0.95) !important; /* Daha beyaz yap */
+        padding: 0.8rem 2rem; /* Hafifçe daralt (Animasyonlu küçülme) */
+    }
+
+.navbar-brand {
+    font-weight: 700;
+    color: #4e73df !important;
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+}
+
+.nav-link {
+    color: #5a5c69 !important;
+    font-weight: 500;
+    margin-left: 15px;
+    transition: all 0.3s;
+}
+
+    .nav-link:hover {
+        color: #4e73df !important;
+        transform: translateY(-2px);
+    }
+
+.card {
+    border: none;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+
+/* Buton Stilleri */
+.btn {
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: all 0.3s;
+    border: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+    color: white;
+}
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        transform: translateY(-2px);
+    }
+
+.btn-success {
+    background: linear-gradient(135deg, #2af598 0%, #009efd 100%);
+    box-shadow: 0 4px 15px rgba(0, 158, 253, 0.3);
+    color: white;
+}
+
+.btn-outline-primary {
+    border: 2px solid #667eea;
+    color: #667eea;
+    background: transparent;
+}
+
+    .btn-outline-primary:hover {
+        background: #667eea;
+        color: white;
+    }
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+    padding: 100px 0 150px 0;
+    color: white;
+    border-radius: 0 0 50% 50% / 4%;
+    margin-bottom: 50px;
+    position: relative;
+    overflow: hidden;
+}

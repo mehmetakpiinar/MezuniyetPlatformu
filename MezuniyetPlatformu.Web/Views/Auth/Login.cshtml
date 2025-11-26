@@ -1,0 +1,79 @@
+﻿@model MezuniyetPlatformu.Web.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Giriş Yap";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container d-flex align-items-center justify-content-center" style="height: calc(100vh - 100px);">
+
+    <div class="row g-0 shadow-lg rounded-4 overflow-hidden w-100" style="max-height: 700px;">
+
+        <div class="col-lg-5 d-flex flex-column justify-content-center bg-white p-5">
+            <div class="mx-auto" style="width: 100%; max-width: 380px;">
+
+                <div class="mb-4">
+                    <h2 class="fw-bold text-dark mb-1">Tekrar Hoş Geldin!</h2>
+                    <p class="text-muted small">Kaldığın yerden devam etmek için giriş yap.</p>
+                </div>
+
+                <form id="account" method="post" asp-controller="Auth" asp-action="Login">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small" style="font-size: 0.85rem;"></div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Email" class="form-control bg-light border-0" placeholder="name@example.com" style="height: 55px;" />
+                        <label asp-for="Email" class="small pt-2">E-Posta Adresi</label>
+                        <span asp-validation-for="Email" class="text-danger small ms-2"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Sifre" class="form-control bg-light border-0" placeholder="Şifre" style="height: 55px;" />
+                        <label asp-for="Sifre" class="small pt-2">Şifre</label>
+                        <span asp-validation-for="Sifre" class="text-danger small ms-2"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="rememberMe" checked>
+                            <label class="form-check-label small text-muted" for="rememberMe">
+                                Beni Hatırla
+                            </label>
+                        </div>
+                        <a href="#" class="small text-decoration-none fw-bold" style="color: #0a66c2;">Şifremi Unuttum?</a>
+                    </div>
+
+                    <div class="d-grid mb-4">
+                        <button id="login-submit" type="submit" class="btn btn-primary rounded-pill py-2 fw-bold shadow-sm" style="background-color: #0a66c2; border: none; height: 50px;">
+                            Giriş Yap
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <span class="text-muted small">Hesabın yok mu?</span>
+                        <a asp-action="Register" class="fw-bold text-decoration-none ms-1 small" style="color: #0a66c2;">Hemen Kayıt Ol</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-7 d-none d-lg-flex flex-column align-items-center justify-content-center p-5" style="background-color: #eef3f8;">
+
+            <img src="https://img.freepik.com/free-vector/business-deal-concept-illustration_114360-1331.jpg"
+                 alt="Giriş İllüstrasyonu"
+                 class="img-fluid mb-4"
+                 style="max-height: 400px; width: auto; mix-blend-mode: multiply;">
+
+            <div class="text-center px-5">
+                <h3 class="fw-bold text-dark mb-2">Fırsatları Yakala</h3>
+                <p class="text-muted" style="font-size: 1rem;">
+                    Binlerce şirket ve mezun seni bekliyor. Kariyerine kaldığın yerden devam et.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

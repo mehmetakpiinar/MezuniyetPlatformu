@@ -1,0 +1,68 @@
+﻿@model MezuniyetPlatformu.Web.ViewModels.CreateJobPostViewModel
+@{
+    ViewData["Title"] = "Yeni İş İlanı Oluştur";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Yeni İş İlanı Yayınla</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-bold"></label>
+                        <input asp-for="Title" class="form-control" placeholder="Örn: Junior .NET Geliştirici" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="JobType" class="form-label fw-bold"></label>
+                            <select asp-for="JobType" class="form-select">
+                                <option value="">Seçiniz...</option>
+                                <option value="Tam Zamanlı">Tam Zamanlı</option>
+                                <option value="Yarı Zamanlı">Yarı Zamanlı</option>
+                                <option value="Staj">Staj</option>
+                                <option value="Uzaktan">Uzaktan</option>
+                            </select>
+                            <span asp-validation-for="JobType" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Location" class="form-label fw-bold"></label>
+                            <input asp-for="Location" class="form-control" placeholder="Örn: İstanbul / Hibrit" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Deadline" class="form-label fw-bold"></label>
+                        <input asp-for="Deadline" class="form-control" />
+                        <span asp-validation-for="Deadline" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-bold"></label>
+                        <textarea asp-for="Description" class="form-control" rows="6" placeholder="İş tanımı ve aranan nitelikler..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">İlanı Yayınla</button>
+                        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

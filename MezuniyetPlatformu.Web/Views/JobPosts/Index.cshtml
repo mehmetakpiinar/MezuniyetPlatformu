@@ -1,0 +1,106 @@
+﻿@using System.Security.Claims
+@model IEnumerable<MezuniyetPlatformu.Web.ViewModels.JobPostsViewModel>
+@{
+    ViewData["Title"] = "Açık Pozisyonlar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    if (string.IsNullOrEmpty(currentUserId)) { currentUserId = User.FindFirstValue("nameid"); }
+    if (string.IsNullOrEmpty(currentUserId)) { currentUserId = User.FindFirstValue("sub"); }
+}
+
+<div class="bg-white border-bottom py-5 mb-5">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="fw-bold text-dark mb-2">💼 İş İlanları</h1>
+            <p class="text-muted mb-0">Kariyerine yön verecek en yeni fırsatları keşfet.</p>
+        </div>
+
+        @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Isveren"))
+        {
+            <a asp-action="Create" class="btn btn-success rounded-pill px-4 shadow-sm">
+                <i class="fa-solid fa-plus me-2"></i> İlan Yayınla
+            </a>
+        }
+    </div>
+</div>
+
+<div class="container">
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger shadow-sm border-0" role="alert">
+            <i class="fa-solid fa-circle-exclamation me-2"></i> @ViewBag.ErrorMessage
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                <i class="fa-solid fa-briefcase fa-2x text-muted"></i>
+            </div>
+            <h4 class="text-muted">Aktif ilan bulunamadı.</h4>
+            <p class="text-secondary">Lütfen daha sonra tekrar kontrol ediniz.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var ilan in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                        <div class="card-body p-4 d-flex flex-column">
+
+                            <div class="d-flex mb-3">
+                                <div class="bg-light rounded-3 d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width: 50px; height: 50px;">
+                                    <i class="fa-solid fa-building text-primary fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h5 class="card-title mb-1 fw-bold text-dark" style="font-size: 1.1rem;">@ilan.Title</h5>
+                                    <small class="text-muted">Şirket Adı</small>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <span class="badge bg-light text-dark border me-1 fw-normal px-2 py-1">
+                                    @ilan.JobType
+                                </span>
+                                <span class="badge bg-light text-dark border fw-normal px-2 py-1">
+                                    @(ilan.Location ?? "Uzaktan")
+                                </span>
+                            </div>
+
+                            <p class="card-text text-secondary small mb-4 flex-grow-1">
+                                @(ilan.Description.Length > 100 ? ilan.Description.Substring(0, 100) + "..." : ilan.Description)
+                            </p>
+
+                            <div class="d-flex justify-content-between align-items-center border-top pt-3 mt-auto">
+                                <small class="text-muted" style="font-size: 0.75rem;">
+                                    <i class="fa-regular fa-clock me-1"></i> @ilan.PublishedDate.ToShortDateString()
+                                </small>
+
+                                <a asp-controller="JobPosts" asp-action="Detail" asp-route-id="@ilan.JobPostId" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                                    İncele
+                                </a>
+                            </div>
+
+                            @if (User.Identity?.IsAuthenticated == true &&
+                                                User.IsInRole("Isveren") &&
+                                                ilan.EmployerProfile?.UserId.ToString() == currentUserId)
+                            {
+                                <div class="position-absolute top-0 end-0 p-3">
+                                    <a asp-controller="JobPosts" asp-action="Applications" asp-route-id="@ilan.JobPostId" class="btn btn-warning btn-sm shadow-sm text-white" title="Başvurular">
+                                        <i class="fa-solid fa-users"></i>
+                                    </a>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
