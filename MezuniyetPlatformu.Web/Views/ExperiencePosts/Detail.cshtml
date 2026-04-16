@@ -4,27 +4,112 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <h1 class="card-title display-6">@Model.Title</h1>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
 
-            <h6 class="card-subtitle mb-4 text-muted border-bottom pb-3">
-                <span class="fw-bold text-primary">
-                    @(Model.AuthorUser?.FirstName ?? "Bilinmeyen") @(Model.AuthorUser?.LastName ?? "Kullanıcı")
-                </span>
-                tarafından @Model.CreatedDate.ToLongDateString() tarihinde paylaşıldı.
-            </h6>
-
-            <div class="card-text" style="white-space: pre-wrap; font-size: 1.1rem; line-height: 1.6;">
-                @Model.Content
-            </div>
-        </div>
-
-        <div class="card-footer bg-light">
-            <a asp-action="Index" class="btn btn-secondary">
-                &larr; Listeye Dön
+            <a asp-action="Index" class="text-decoration-none text-muted mb-4 d-inline-block small fw-bold hover-lift">
+                <i class="fa-solid fa-arrow-left me-1"></i> Akışa Dön
             </a>
+
+            <div class="card border-0 shadow-sm overflow-hidden mb-4">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" class="card-img-top w-100" style="max-height: 500px; object-fit: cover;" alt="@Model.Title">
+                }
+
+                <div class="card-body p-5">
+                    <div class="d-flex align-items-center mb-4">
+                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill me-3">Deneyim</span>
+                        <span class="text-muted small"><i class="fa-regular fa-clock me-1"></i> @Model.CreatedDate.ToString("dd MMMM yyyy")</span>
+                    </div>
+
+                    <h1 class="fw-bold text-dark mb-4 display-6">@Model.Title</h1>
+
+                    <div class="d-flex align-items-center mb-5 pb-4 border-bottom">
+                        <div class="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center fw-bold me-3 shadow-sm" style="width: 50px; height: 50px; font-size: 1.2rem;">
+                            @(Model.AuthorUser?.FirstName?.Substring(0, 1) ?? "U")
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-dark">
+                                @(Model.AuthorUser?.FirstName ?? "Gizli") @(Model.AuthorUser?.LastName ?? "Kullanıcı")
+                            </h6>
+                            <small class="text-muted">Yazar</small>
+                        </div>
+                    </div>
+
+                    <div class="article-content text-dark" style="font-size: 1.15rem; line-height: 1.8;">
+                        @Html.Raw(Model.Content)
+                    </div>
+
+                    <div class="mt-5 pt-4 border-top d-flex justify-content-between align-items-center">
+                        <form asp-action="Like" asp-route-id="@Model.PostId" method="post">
+                            <button type="submit" class="btn @(Model.IsLikedByCurrentUser ? "btn-danger" : "btn-outline-danger") btn-sm rounded-pill px-4 me-2">
+                                <i class="@(Model.IsLikedByCurrentUser ? "fa-solid" : "fa-regular") fa-heart me-1"></i>
+                                @(Model.IsLikedByCurrentUser ? "Beğendin" : "Beğen")
+                            </button>
+                            <span class="text-muted small">@Model.LikeCount Kişi beğendi</span>
+                        </form>
+
+                        <button class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                            <i class="fa-solid fa-share-nodes me-1"></i> Paylaş
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">Yorumlar (@(Model.Comments?.Count ?? 0))</h5>
+
+                    @if (Model.Comments != null && Model.Comments.Any())
+                    {
+                        <ul class="list-unstyled mb-4">
+                            @foreach (var comment in Model.Comments)
+                            {
+                                <li class="d-flex mb-3">
+                                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; min-width: 40px;">
+                                        <i class="fa-solid fa-user text-secondary"></i>
+                                    </div>
+                                    <div class="bg-light p-3 rounded-4 w-100">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <strong class="text-dark small">@comment.UserName</strong>
+                                            <small class="text-muted" style="font-size: 0.75rem;">@comment.CommentDate.ToString("dd.MM HH:mm")</small>
+                                        </div>
+                                        <p class="mb-0 text-dark small">@comment.CommentText</p>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <div class="alert alert-light text-center small text-muted">Henüz yorum yapılmamış. İlk yorumu sen yap!</div>
+                    }
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form asp-action="AddComment" method="post" class="mt-4">
+                            <input type="hidden" name="postId" value="@Model.PostId" />
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">Yorumun</label>
+                                <textarea name="commentText" class="form-control" rows="3" placeholder="Düşüncelerini paylaş..." required></textarea>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">
+                                    <i class="fa-solid fa-paper-plane me-2"></i> Gönder
+                                </button>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning small">
+                            Yorum yapmak için <a asp-controller="Auth" asp-action="Login" class="fw-bold">giriş yapmalısınız.</a>
+                        </div>
+                    }
+                </div>
+            </div>
 
         </div>
     </div>

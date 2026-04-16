@@ -1,0 +1,201 @@
+﻿@model MezuniyetPlatformu.Web.ViewModels.StudentViewModel
+@{
+    ViewData["Title"] = "Öğrenci Profili";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="bg-light min-vh-100 py-5">
+    <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <a href="/University/MyStudents" class="text-decoration-none text-muted fw-bold small hover-link">
+                <i class="fa-solid fa-arrow-left me-2"></i>Öğrenci Listesine Dön
+            </a>
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success py-2 px-3 m-0 rounded-pill shadow-sm">
+                    <i class="fa-solid fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                </div>
+            }
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden sticky-top" style="top: 2rem;">
+
+                    <div class="bg-primary p-5 text-center position-relative"
+                         style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+
+                        <div class="position-absolute top-100 start-50 translate-middle">
+                            <div class="bg-white p-1 rounded-circle shadow">
+                                <div class="bg-light text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold display-4"
+                                     style="width: 100px; height: 100px;">
+                                    @(Model.FirstName.Substring(0, 1))@(Model.LastName.Substring(0, 1))
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body pt-5 text-center mt-3">
+                        <h4 class="fw-bold text-dark mb-1">@Model.FullName</h4>
+                        <span class="badge bg-info bg-opacity-10 text-info rounded-pill px-3 py-2 mb-3">
+                            Öğrenci
+                        </span>
+
+                        <div class="d-flex justify-content-center gap-2 mb-4">
+                            <div class="text-muted small">
+                                <i class="fa-solid fa-location-dot me-1"></i> Fırat Üniversitesi
+                            </div>
+                        </div>
+
+                        <div class="bg-light p-3 rounded-3 text-start mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="icon-box text-primary me-3"><i class="fa-solid fa-envelope"></i></div>
+                                <div class="text-truncate">
+                                    <small class="d-block text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Email</small>
+                                    <span class="fw-medium text-dark">@Model.Email</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box text-primary me-3"><i class="fa-solid fa-calendar-days"></i></div>
+                                <div>
+                                    <small class="d-block text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Kayıt Tarihi</small>
+                                    <span class="fw-medium text-dark">@Model.RegisterTime.ToString("dd MMMM yyyy")</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <a asp-controller="Messages" asp-action="Chat" asp-route-userId="@Model.UserId"
+                               class="btn btn-primary py-2 rounded-pill fw-bold shadow-sm hover-scale">
+                                <i class="fa-regular fa-paper-plane me-2"></i> Mesaj Gönder
+                            </a>
+
+                            <form asp-action="ApproveGraduation" asp-route-id="@Model.UserId" method="post"
+                                  onsubmit="return confirm('Bu öğrencinin mezuniyetini onaylamak istediğinize emin misiniz? Bu işlem geri alınamaz.');">
+                                <button type="submit" class="btn btn-outline-success w-100 py-2 rounded-pill fw-bold hover-bg-success">
+                                    <i class="fa-solid fa-graduation-cap me-2"></i> Mezuniyeti Onayla
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-header bg-white border-0 py-4 px-4">
+                        <h5 class="fw-bold m-0 text-dark"><i class="fa-solid fa-user-graduate me-2 text-primary"></i>Eğitim Bilgileri</h5>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+                        <div class="d-flex align-items-start p-3 bg-light rounded-3 border border-light">
+                            <div class="bg-white p-3 rounded-circle shadow-sm me-3 text-primary">
+                                <i class="fa-solid fa-building-columns fa-xl"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1">Fırat Üniversitesi</h6>
+                                <p class="text-secondary mb-1">Bilgisayar Mühendisliği</p>
+                                <div class="d-flex gap-3 text-muted small">
+                                    <span><i class="fa-regular fa-calendar me-1"></i> 2021 - 2025</span>
+                                    <span><i class="fa-solid fa-star me-1 text-warning"></i> 3.50 Ort.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header bg-white border-0 py-4 px-4">
+                        <h5 class="fw-bold m-0 text-dark">
+                            <i class="fa-solid fa-briefcase me-2 text-primary"></i>İş & Staj Deneyimleri
+                        </h5>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+
+                        @if (Model.Experiences != null && Model.Experiences.Any())
+                        {
+                            <div class="timeline">
+                                @foreach (var exp in Model.Experiences)
+                                {
+                                    <div class="d-flex align-items-start pb-4 border-start border-2 ps-4 position-relative" style="border-color: #e9ecef !important;">
+
+                                        <div class="position-absolute top-0 start-0 translate-middle bg-white p-1" style="margin-top: 5px;">
+                                            <div class="bg-primary rounded-circle shadow-sm" style="width: 14px; height: 14px;"></div>
+                                        </div>
+
+                                        <div class="w-100">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="fw-bold text-dark mb-0" style="font-size: 1.1rem;">@exp.Title</h6>
+                                                <span class="badge bg-light text-secondary border">
+                                                    @exp.CreatedDate.ToString("MMM yyyy")
+                                                </span>
+                                            </div>
+
+                                            <p class="text-secondary mb-2" style="font-size: 0.95rem; line-height: 1.6;">
+                                                @exp.Content
+                                            </p>
+
+                                            @if (!string.IsNullOrEmpty(exp.ImageUrl))
+                                            {
+                                                <div class="mt-2">
+                                                    <a href="@exp.ImageUrl" target="_blank" class="text-decoration-none">
+                                                        <div class="d-inline-flex align-items-center p-2 rounded-3 border bg-light bg-opacity-50 hover-bg-light">
+                                                            <img src="@exp.ImageUrl" class="rounded-2 me-2 object-fit-cover"
+                                                                 style="width: 40px; height: 40px;" alt="Deneyim Görseli">
+                                                            <small class="fw-bold text-primary">Görseli Görüntüle <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i></small>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center py-5 border rounded-3 border-dashed bg-light bg-opacity-25">
+                                <div class="bg-white rounded-circle d-inline-flex p-3 mb-3 shadow-sm">
+                                    <i class="fa-regular fa-folder-open fa-2x text-muted opacity-50"></i>
+                                </div>
+                                <h6 class="text-muted fw-bold">Henüz deneyim bilgisi yok</h6>
+                                <p class="text-secondary small mb-0">Öğrenci henüz staj veya iş deneyimi paylaşmamış.</p>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .icon-box {
+        width: 24px;
+        text-align: center;
+    }
+
+    .hover-link:hover {
+        text-decoration: underline !important;
+        color: var(--bs-primary) !important;
+    }
+
+    .hover-scale:hover {
+        transform: translateY(-2px);
+        transition: 0.2s;
+    }
+
+    .hover-bg-success:hover {
+        background-color: #198754;
+        color: white;
+        border-color: #198754;
+    }
+
+    .border-dashed {
+        border-style: dashed !important;
+    }
+</style>

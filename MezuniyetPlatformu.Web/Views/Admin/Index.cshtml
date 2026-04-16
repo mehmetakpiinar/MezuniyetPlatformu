@@ -1,0 +1,129 @@
+﻿@model MezuniyetPlatformu.Web.ViewModels.AdminStatsViewModel
+@{
+    ViewData["Title"] = "Yönetici Paneli";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-0">Yönetim Paneli</h2>
+            <p class="text-muted">Platform genel durum özeti ve sistem kontrolü.</p>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-white text-dark border shadow-sm p-2 px-3 rounded-pill">
+                <i class="fa-regular fa-calendar-check me-2 text-primary"></i>@DateTime.Now.ToString("dd MMMM yyyy")
+            </span>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm card-hover">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-muted text-uppercase small fw-bold mb-2">Toplam Kullanıcı</h6>
+                            <h2 class="display-6 fw-bold mb-0">@Model.TotalUsers</h2>
+                        </div>
+                        <div class="icon-shape bg-primary bg-opacity-10 text-primary rounded-3 p-3">
+                            <i class="fa-solid fa-users-gear fa-2xl"></i>
+                        </div>
+                    </div>
+                    <hr class="my-3 opacity-10">
+                    <a asp-action="Users" class="text-decoration-none small fw-bold d-flex align-items-center justify-content-between text-primary">
+                        Kullanıcıları Yönet <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm card-hover">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-muted text-uppercase small fw-bold mb-2">İş İlanları</h6>
+                            <h2 class="display-6 fw-bold mb-0">@Model.TotalJobPosts</h2>
+                        </div>
+                        <div class="icon-shape bg-success bg-opacity-10 text-success rounded-3 p-3">
+                            <i class="fa-solid fa-briefcase fa-2xl"></i>
+                        </div>
+                    </div>
+                    <hr class="my-3 opacity-10">
+                    <a asp-action="JobPosts" class="text-decoration-none small fw-bold d-flex align-items-center justify-content-between text-success">
+                        İlanları Denetle <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm card-hover">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-muted text-uppercase small fw-bold mb-2">Deneyimler</h6>
+                            <h2 class="display-6 fw-bold mb-0">@Model.TotalExperiencePosts</h2>
+                        </div>
+                        <div class="icon-shape bg-warning bg-opacity-10 text-warning rounded-3 p-3">
+                            <i class="fa-solid fa-quote-left fa-2xl"></i>
+                        </div>
+                    </div>
+                    <hr class="my-3 opacity-10">
+                    <a asp-action="ExperiencePosts" class="text-decoration-none small fw-bold d-flex align-items-center justify-content-between text-warning">
+                        Paylaşımları İncele <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="fw-bold mb-0"><i class="fa-solid fa-university me-2 text-secondary"></i>Üniversite Yönetimi</h5>
+                </div>
+                <div class="card-body">
+                    <div class="p-4 bg-light rounded-3 text-center border border-dashed">
+                        <i class="fa-solid fa-building-columns fa-3x text-muted mb-3"></i>
+                        <h5>Sistemde Kayıtlı Üniversiteler</h5>
+                        <p class="text-muted small">Yeni üniversite ekleyebilir veya mevcut olanları düzenleyebilirsiniz.</p>
+                        <a asp-action="Universities" class="btn btn-dark px-4 rounded-pill fw-bold">
+                            Üniversiteleri Yönet
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       
+    </div>
+</div>
+
+<style>
+    .card-hover {
+        transition: all 0.3s ease;
+        border-bottom: 4px solid transparent !important;
+    }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important;
+            border-bottom: 4px solid #0d6efd !important;
+        }
+
+    .icon-shape {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .border-dashed {
+        border-style: dashed !important;
+        border-width: 2px !important;
+    }
+</style>

@@ -1,109 +1,155 @@
-﻿@{
-    ViewData["Title"] = "Kariyerin Buradan Başlar";
+﻿@model MezuniyetPlatformu.Web.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Genel Bakış";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="hero-section text-center">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <h1 class="hero-title">
-                    Hayalindeki Kariyeri <br />
-                    <span style="color: #ffce67;">Mezuniyet Platformu</span> ile Başlat!
-                </h1>
-                <p class="hero-subtitle">
-                    Öğrenciler, mezunlar ve sektörün lider şirketleri tek bir çatı altında.
-                    Staj bul, işe başvur, deneyimlerini paylaş ve networkünü genişlet.
-                </p>
-
-                <form action="/JobPosts/Index" method="get">
-                    <div class="search-box-container">
-                        <input type="text" class="search-input" placeholder="Pozisyon, şirket veya anahtar kelime ara...">
-                        <button type="submit" class="btn btn-primary search-btn">
-                            <i class="fa-solid fa-magnifying-glass me-2"></i> İŞ ARA
-                        </button>
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100 stats-card-hover">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle text-primary">
+                        <i class="fa-solid fa-briefcase fa-lg"></i>
                     </div>
-                </form>
-
-                <div class="mt-4 text-white-50">
-                    Popüler aramalar:
-                    <a href="#" class="text-white text-decoration-underline me-2">Yazılım Mühendisi</a>
-                    <a href="#" class="text-white text-decoration-underline me-2">Stajyer</a>
-                    <a href="#" class="text-white text-decoration-underline">Veri Analisti</a>
+                    <span class="badge bg-soft-primary text-primary">İlanlar</span>
                 </div>
+                <h6 class="text-muted small fw-bold mb-1">Toplam Fırsat</h6>
+                <h2 class="fw-bold mb-0">@Model.TotalOpportunities</h2>
             </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100 stats-card-hover">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success">
+                        <i class="fa-solid fa-paper-plane fa-lg"></i>
+                    </div>
+                    <span class="badge bg-soft-success text-success">Başvurular</span>
+                </div>
+                <h6 class="text-muted small fw-bold mb-1">Yaptığım Başvurular</h6>
+                <h2 class="fw-bold mb-0">@Model.MyApplications</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100 stats-card-hover">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="bg-warning bg-opacity-10 p-3 rounded-circle text-warning">
+                        <i class="fa-solid fa-comment-dots fa-lg"></i>
+                    </div>
+                    <span class="badge bg-soft-warning text-warning">Mesajlar</span>
+                </div>
+                <h6 class="text-muted small fw-bold mb-1">Okunmamış Mesaj</h6>
+                <h2 class="fw-bold mb-0">@Model.UnreadMessages</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100 bg-dark text-white shadow-lg overflow-hidden position-relative">
+            <div class="card-body position-relative z-index-1">
+                <h6 class="text-white-50 small fw-bold mb-3">Profil Doluluk Oranı</h6>
+                <div class="d-flex align-items-end gap-2 mb-2">
+                    <h2 class="fw-bold mb-0">%@Model.ProfileCompletionRate</h2>
+                    <small class="text-white-50 pb-1">Tamamlandı</small>
+                </div>
+                <div class="progress" style="height: 6px; background-color: rgba(255,255,255,0.1);">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: @Model.ProfileCompletionRate%"></div>
+                </div>
+                <a asp-controller="Profile" asp-action="Edit" class="btn btn-sm btn-outline-light w-100 mt-3 border-0 bg-white bg-opacity-10 fw-bold">Profili Güncelle</a>
+            </div>
+            <i class="fa-solid fa-rocket position-absolute text-white opacity-10" style="font-size: 5rem; right: -10px; bottom: -10px;"></i>
         </div>
     </div>
 </div>
 
-<div class="container stats-container mb-5">
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa-solid fa-briefcase"></i></div>
-                <div class="stat-number">500+</div>
-                <div class="text-muted">Aktif İş İlanı</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa-solid fa-building"></i></div>
-                <div class="stat-number">120+</div>
-                <div class="text-muted">Kayıtlı Şirket</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa-solid fa-user-graduate"></i></div>
-                <div class="stat-number">1000+</div>
-                <div class="text-muted">Öğrenci & Mezun</div>
-            </div>
-        </div>
-    </div>
-</div>
+<div class="row g-4">
+    <div class="col-12">
 
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h6 class="text-primary fw-bold text-uppercase">Süreç Nasıl İşliyor?</h6>
-        <h2 class="fw-bold">Kariyer Yolculuğun 3 Adımda Başlasın</h2>
-    </div>
-
-    <div class="row text-center">
-        <div class="col-md-4 mb-4">
-            <div class="p-4">
-                <div class="step-circle">1</div>
-                <h4>Profilini Oluştur</h4>
-                <p class="text-muted">Eğitim bilgilerini, yeteneklerini ve projelerini ekleyerek profesyonel bir profil oluştur.</p>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="p-4">
-                <div class="step-circle">2</div>
-                <h4>İlanlara Başvur</h4>
-                <p class="text-muted">Yüzlerce aktif iş ve staj ilanını incele, sana en uygun olana tek tıkla başvur.</p>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="p-4">
-                <div class="step-circle">3</div>
-                <h4>İletişime Geç</h4>
-                <p class="text-muted">İşverenlerle doğrudan mesajlaş, mülakat süreçlerini yönet ve işi kap!</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-@if (!User.Identity.IsAuthenticated)
-{
-    <div class="container my-5">
-        <div class="card bg-primary text-white border-0 rounded-3 overflow-hidden">
-            <div class="card-body p-5 text-center position-relative">
-                <h2 class="fw-bold mb-3">Hala Aramıza Katılmadın mı?</h2>
-                <p class="lead mb-4">Kariyer fırsatlarını kaçırmamak için hemen ücretsiz üye ol.</p>
-                <a asp-controller="Auth" asp-action="Register" class="btn btn-light btn-lg px-5 rounded-pill fw-bold text-primary">
-                    Hemen Kayıt Ol
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body d-flex gap-2 flex-wrap">
+                <a asp-controller="JobPosts" asp-action="Index" class="btn btn-light border-0 px-4 fw-bold text-dark flex-grow-1">
+                    <i class="fa-solid fa-magnifying-glass me-2 text-primary"></i> İş Ara
+                </a>
+                <a asp-controller="ExperiencePosts" asp-action="Create" class="btn btn-light border-0 px-4 fw-bold text-dark flex-grow-1">
+                    <i class="fa-solid fa-plus me-2 text-success"></i> Deneyim Paylaş
+                </a>
+                <a asp-controller="Profile" asp-action="Index" class="btn btn-light border-0 px-4 fw-bold text-dark flex-grow-1">
+                    <i class="fa-solid fa-file-pdf me-2 text-danger"></i> Özgeçmişim
                 </a>
             </div>
         </div>
+
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold m-0"><i class="fa-solid fa-bolt me-2 text-warning"></i>Senin İçin Önerilen Son İlanlar</h6>
+                <a asp-controller="JobPosts" asp-action="Index" class="text-decoration-none small fw-bold text-primary">Hepsine Göz At</a>
+            </div>
+            <div class="list-group list-group-flush">
+                @if (ViewBag.RecentPosts != null)
+                {
+                    foreach (var post in ViewBag.RecentPosts)
+                    {
+                        <div class="list-group-item border-0 p-3 mb-2 rounded-3 hover-bg-light transition-all">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-white shadow-sm rounded p-2 border" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa-solid fa-building text-primary fa-lg"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0 fw-bold">@post.Title</h6>
+                                    <div class="d-flex gap-3 small text-muted mt-1">
+                                        <span><i class="fa-solid fa-location-dot me-1"></i> @post.Location</span>
+                                        <span><i class="fa-solid fa-clock me-1"></i> Yeni</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <a asp-controller="JobPosts" asp-action="Detail" asp-route-id="@post.JobPostId" class="btn btn-sm btn-primary rounded-pill px-4">İncele</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="p-4 text-center text-muted">
+                        <p class="mb-0">Henüz önerilecek aktif bir ilan bulunmuyor.</p>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
-}
+</div>
+
+<style>
+    .bg-soft-primary {
+        background-color: rgba(79, 70, 229, 0.1);
+    }
+
+    .bg-soft-success {
+        background-color: rgba(25, 135, 84, 0.1);
+    }
+
+    .bg-soft-warning {
+        background-color: rgba(255, 193, 7, 0.1);
+    }
+
+    .stats-card-hover {
+        transition: all 0.3s ease;
+    }
+
+        .stats-card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+        }
+
+    .hover-bg-light:hover {
+        background-color: #f8fafc;
+        padding-left: 1.5rem !important;
+    }
+
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+</style>

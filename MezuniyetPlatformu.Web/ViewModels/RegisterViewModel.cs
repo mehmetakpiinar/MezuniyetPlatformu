@@ -32,5 +32,7 @@ namespace MezuniyetPlatformu.Web.ViewModels
         [Required(ErrorMessage = "Kullanıcı tipi seçmelisiniz.")]
         [Display(Name = "Kayıt Tipi")]
         public int UserTypeId { get; set; } // 1: Ogrenci, 2: Mezun, 3: Isveren
+        [Display(Name = "Üniversite")]
+        public int? UniversityId { get; set; }
     }
 }

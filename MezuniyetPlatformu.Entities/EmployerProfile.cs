@@ -13,6 +13,10 @@ namespace MezuniyetPlatformu.Entities
         public User User { get; set; }
         public int CompanyId { get; set; }
         public Company Company { get; set; }
-        public string Position { get; set; }
+        public string? Position { get; set; }
+        public string? PhoneNumber { get; set; }
+
+
+        public string? CompanyName { get; set; }
     }
 }

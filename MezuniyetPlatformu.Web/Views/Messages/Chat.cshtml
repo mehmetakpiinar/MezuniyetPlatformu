@@ -2,59 +2,150 @@
 @{
     ViewData["Title"] = "Sohbet";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    int otherUserId = ViewBag.OtherUserId;
+    int otherUserId = ViewBag.OtherUserId; // Controller'dan gelen ID
 }
 
-<div class="container mt-4">
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Sohbet</h5>
-        </div>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
 
-        <div class="card-body" style="height: 400px; overflow-y: auto; background-color: #f8f9fa;" id="chatBox">
-            @if (!Model.Any())
-            {
-                <div class="text-center text-muted mt-5">
-                    <p>Henüz mesaj yok. İlk mesajı sen gönder!</p>
-                </div>
-            }
-            else
-            {
-                @foreach (var msg in Model)
-                {
-                    <div class="d-flex @(msg.IsMyMessage ? "justify-content-end" : "justify-content-start") mb-3">
-                        <div class="card @(msg.IsMyMessage ? "bg-success text-white" : "bg-white text-dark") shadow-sm" style="max-width: 75%;">
-                            <div class="card-body p-2 px-3">
-                                <p class="mb-0">@msg.Content</p>
-                                <small class="@(msg.IsMyMessage ? "text-light" : "text-muted")" style="font-size: 0.7rem;">
-                                    @msg.SentDate.ToLocalTime().ToString("HH:mm")
-                                    @if (msg.IsMyMessage && msg.IsRead)
-                                    {
-                                        <span>(Okundu)</span>
-                                    }
-                                </small>
-                            </div>
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="height: 80vh;">
+
+                <div class="card-header bg-white border-bottom p-3 d-flex align-items-center justify-content-between sticky-top z-1">
+                    <div class="d-flex align-items-center">
+                        <a asp-action="Index" class="btn btn-light btn-sm rounded-circle me-3 text-muted" title="Listeye Dön">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </a>
+
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold me-3 shadow-sm" style="width: 45px; height: 45px;">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+
+                        <div>
+                            <h6 class="mb-0 fw-bold text-dark">Sohbet</h6>
                         </div>
                     </div>
-                }
-            }
-        </div>
 
-        <div class="card-footer">
-            <form asp-action="Send" method="post" class="d-flex">
-                <input type="hidden" name="recipientUserId" value="@otherUserId" />
+                    <button class="btn btn-light btn-sm rounded-circle text-muted border-0">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                </div>
 
-                <input type="text" name="content" class="form-control me-2" placeholder="Bir mesaj yazın..." required autocomplete="off" />
+                <div class="card-body bg-light overflow-auto p-4" id="chatBox" style="scroll-behavior: smooth; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-blend-mode: soft-light;">
+                    @if (!Model.Any())
+                    {
+                        <div class="d-flex flex-column align-items-center justify-content-center h-100 opacity-50">
+                            <div class="bg-white p-4 rounded-circle shadow-sm mb-3">
+                                <i class="fa-regular fa-paper-plane fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="fw-bold text-muted">Sohbet Başlatın</h5>
+                            <p class="small text-muted">İlk mesajı göndererek iletişime geçin.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var msg in Model)
+                        {
+                            <div class="d-flex mb-3 w-100 @(msg.IsMyMessage ? "justify-content-end" : "justify-content-start")">
 
-                <button type="submit" class="btn btn-primary">
-                    Gönder &rarr;
-                </button>
-            </form>
+                                <div class="position-relative p-3 shadow-sm text-break
+                                             @(msg.IsMyMessage ? "bg-primary text-white rounded-br-0" : "bg-white text-dark rounded-bl-0")"
+                                     style="max-width: 75%; border-radius: 1.2rem; min-width: 120px;">
+
+                                    <p class="mb-1" style="font-size: 0.95rem; line-height: 1.5;">@msg.Content</p>
+
+                                    <div class="d-flex align-items-center justify-content-end gap-1 mt-1"
+                                         style="font-size: 0.7rem; opacity: 0.8;">
+
+                                        <span>@msg.SentDate.ToLocalTime().ToString("HH:mm")</span>
+
+                                        @if (msg.IsMyMessage)
+                                        {
+                                            @if (msg.IsRead)
+                                            {
+                                                <i class="fa-solid fa-check-double text-info" title="Okundu"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa-solid fa-check" title="Gönderildi"></i>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+
+                <div class="card-footer bg-white border-top p-3">
+                    <form asp-action="Send" method="post" class="d-flex align-items-center gap-2">
+                        <input type="hidden" name="recipientUserId" value="@otherUserId" />
+
+                        <button type="button" class="btn btn-light text-secondary rounded-circle btn-lg p-2 d-none d-md-block" style="width: 45px; height: 45px;">
+                            <i class="fa-solid fa-paperclip"></i>
+                        </button>
+
+                        <input type="text" name="content" class="form-control form-control-lg border-0 bg-light rounded-pill px-4 shadow-none"
+                               placeholder="Bir mesaj yazın..." autocomplete="off" required>
+
+                        <button type="submit" class="btn btn-primary rounded-circle btn-lg p-2 shadow-sm hover-scale d-flex align-items-center justify-content-center"
+                                style="width: 48px; height: 48px;">
+                            <i class="fa-solid fa-paper-plane" style="font-size: 1.2rem; margin-left: -2px;"></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>
 
+<style>
+    /* Sağ alt köşe sivri (Benim mesajım için konuşma balonu efekti) */
+    .rounded-br-0 {
+        border-bottom-right-radius: 0 !important;
+    }
+
+    /* Sol alt köşe sivri (Onun mesajı için konuşma balonu efekti) */
+    .rounded-bl-0 {
+        border-bottom-left-radius: 0 !important;
+    }
+
+    /* Scrollbar Tasarımı */
+    #chatBox::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #chatBox::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    #chatBox::-webkit-scrollbar-thumb {
+        background: #cbd5e0;
+        border-radius: 10px;
+    }
+
+        #chatBox::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+
+    /* Buton Animasyonu */
+    .hover-scale:hover {
+        transform: scale(1.05);
+        transition: 0.2s;
+    }
+</style>
+
 <script>
-    var chatBox = document.getElementById("chatBox");
-    chatBox.scrollTop = chatBox.scrollHeight;
+    // Sayfa yüklendiğinde en alta in
+    window.onload = function() {
+        scrollToBottom();
+    };
+
+    function scrollToBottom() {
+        var chatBox = document.getElementById("chatBox");
+        if(chatBox) {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
 </script>

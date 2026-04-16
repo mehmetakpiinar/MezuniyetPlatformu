@@ -24,7 +24,12 @@ namespace MezuniyetPlatformu.DataAccess
         public DbSet<JobApplication> JobApplications { get; set; }
         public DbSet<ExperiencePost> ExperiencePosts { get; set; }
         public DbSet<Message> Messages { get; set; }
-
+        public DbSet<University> Universities { get; set; }
+        public DbSet<Announcement> Announcements { get; set; }
+        public DbSet<Event> Events { get; set; }
+        public DbSet<ExperiencePostComment> ExperiencePostComments { get; set; }
+        public DbSet<ExperiencePostLike> ExperiencePostLikes { get; set; }
+        public DbSet<EventParticipant> EventParticipants { get; set; }
 
         // ---- ÇOK ÖNEMLİ DÜZELTME ----
         // EF Core'un "multiple cascade paths" hatasını engellemek için

@@ -18,8 +18,15 @@ namespace MezuniyetPlatformu.Web.ViewModels
         // ---- YENİ EKLENEN KISIM ----
         // API'den gelen "employerProfile": { "userId": 11 ... } verisini yakalamak için
         public EmployerProfileViewModel EmployerProfile { get; set; }
-    }
 
+        public CompanyViewModel? Company { get; set; }
+    }
+    public class CompanyViewModel
+    {
+        public int CompanyId { get; set; }
+        public string? CompanyName { get; set; } // Senin Entity'deki ismin aynısı
+        public string? LogoURL { get; set; }
+    }
     // İç içe gelen veriyi karşılayacak küçük sınıf
     public class EmployerProfileViewModel
     {

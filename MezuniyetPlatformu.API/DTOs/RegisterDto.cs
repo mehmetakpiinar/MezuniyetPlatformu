@@ -19,5 +19,6 @@ namespace MezuniyetPlatformu.API.DTOs
 
         [Required]
         public int UserTypeId { get; set; }
+        public int? UniversityId { get; set; }
     }
 }

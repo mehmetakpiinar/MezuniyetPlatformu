@@ -10,6 +10,7 @@ namespace MezuniyetPlatformu.API.DTOs
 
         [Required(ErrorMessage = "İçerik zorunludur.")]
         public string Content { get; set; }
+        public string? ImageUrl { get; set; }
 
     }
 }

@@ -1,0 +1,130 @@
+﻿@model MezuniyetPlatformu.Web.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = "Şirket Profilini Düzenle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold m-0 text-dark">Şirket Profilini Yönet</h3>
+                    <p class="text-muted m-0">Şirket bilgilerini güncel tutarak adayların güvenini kazan.</p>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary rounded-pill btn-sm">
+                    <i class="fa-solid fa-arrow-left me-2"></i>Profile Dön
+                </a>
+            </div>
+
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="ProfileId" />
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="ProfilePhotoURL" />
+
+                <input type="hidden" asp-for="Skills" value="-" />
+                <input type="hidden" asp-for="GraduationYear" value="0" />
+
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3 border-bottom pb-2">Şirket Logosu</h5>
+                        <div class="d-flex align-items-center gap-4">
+                            <div class="position-relative">
+                                <img src="@(string.IsNullOrEmpty(Model.ProfilePhotoURL) ? "/uploads/defaults/company-placeholder.png" : Model.ProfilePhotoURL)"
+                                     id="imgPreview"
+                                     class="rounded-3 shadow-sm object-fit-cover"
+                                     style="width: 100px; height: 100px; border: 1px solid #dee2e6;">
+                            </div>
+                            <div class="flex-grow-1">
+                                <label class="form-label fw-bold small text-muted">Logo Yükle</label>
+                                <input asp-for="ResimDosyasi" class="form-control" type="file" accept="image/*" onchange="previewImage(this)">
+                                <div class="form-text small">Kare formatında (PNG/JPG) yüklemeniz önerilir.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3 border-bottom pb-2 text-primary">Kurumsal Bilgiler</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Şirket Adı</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa-solid fa-building text-muted"></i></span>
+                                    <input asp-for="UniversityName" class="form-control" placeholder="Örn: Tech Solutions A.Ş." />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Sektör / Faaliyet Alanı</label>
+                                <input asp-for="StudyProgram" class="form-control" placeholder="Örn: Yazılım, Finans, Sağlık" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="fw-bold m-0 text-dark">Şirket Hakkında</h5>
+                            <button type="button" id="btnAiGenerate" class="btn btn-sm btn-light border fw-bold text-primary">
+                                <i class="fa-solid fa-wand-magic-sparkles me-1"></i> AI ile Yazdır
+                            </button>
+                        </div>
+                        <textarea asp-for="About" id="AboutTextArea" class="form-control" rows="6" placeholder="Şirketinizin vizyonu, misyonu ve çalışma kültüründen bahsedin..."></textarea>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3 border-bottom pb-2 text-dark">İletişim & Web</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="PhoneNumber" class="form-label fw-bold">Kurumsal Telefon</label>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="0212 555 55 55" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Web Sitesi</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white text-primary"><i class="fa-solid fa-globe"></i></span>
+                                    <input asp-for="LinkedInURL" class="form-control" placeholder="https://www.sirketiniz.com" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a asp-action="Index" class="btn btn-light btn-lg px-5 border">İptal</a>
+                    <button type="submit" class="btn btn-primary btn-lg px-5 fw-bold shadow-sm">
+                        <i class="fa-solid fa-check me-2"></i> Değişiklikleri Kaydet
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) { $('#imgPreview').attr('src', e.target.result); }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // AI Butonu için basit script (İşveren için metni değiştirerek)
+        $("#btnAiGenerate").click(function () {
+            // Şirket için basit bir prompt hazırlığı (Bu kısmı Controller'daki AI servisine göre özelleştirebilirsin)
+            // Şimdilik sadece tetikliyor.
+            alert("Bu özellik şirket profilleri için yakında aktif olacak!");
+        });
+    </script>
+}

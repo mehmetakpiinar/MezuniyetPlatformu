@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Sockets;
 using System.Security.Claims;
 using System.Text;
 
@@ -42,6 +41,7 @@ namespace MezuniyetPlatformu.API.Controllers
                 Password = sifreHash,
                 UserTypeId = registerDto.UserTypeId,
                 RegisterTime = DateTime.Now,
+                UniversityId = registerDto.UniversityId
             };
 
             await _context.Users.AddAsync(yeniKullanici);
@@ -63,7 +63,6 @@ namespace MezuniyetPlatformu.API.Controllers
                 };
                 await _context.Companies.AddAsync(yeniSirket);
                 await _context.SaveChangesAsync();
-
 
                 var yeniIsverenProfili = new EmployerProfile
                 {

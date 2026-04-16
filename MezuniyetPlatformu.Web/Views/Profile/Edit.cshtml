@@ -2,67 +2,161 @@
 @{
     ViewData["Title"] = "Profili Düzenle";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Kullanıcının rolünü kontrol ediyoruz
+    bool isEmployer = User.IsInRole("Isveren");
 }
 
-<div class="container mt-4">
+<div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-warning">
-                    <h4 class="mb-0 text-dark">Bilgilerini Güncelle</h4>
+        <div class="col-lg-9">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold m-0">@(isEmployer ? "Şirket Profilini Düzenle" : "Profilini Düzenle")</h3>
+                    <p class="text-muted m-0">Bilgilerini güncel tutmak, etkileşimini artırır.</p>
                 </div>
-                <div class="card-body">
-
-                    <form asp-action="Edit" method="post">
-                        <input type="hidden" asp-for="ProfileId" />
-                        <input type="hidden" asp-for="UserId" />
-
-                        <div class="mb-3">
-                            <label asp-for="ProfilePhotoURL" class="form-label fw-bold"></label>
-                            <input asp-for="ProfilePhotoURL" class="form-control" placeholder="https://..." />
-                            <span asp-validation-for="ProfilePhotoURL" class="text-danger"></span>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="StudyProgram" class="form-label fw-bold"></label>
-                                <input asp-for="StudyProgram" class="form-control" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="GraduationYear" class="form-label fw-bold"></label>
-                                <input asp-for="GraduationYear" class="form-control" type="number" />
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="About" class="form-label fw-bold"></label>
-                            <textarea asp-for="About" class="form-control" rows="4"></textarea>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="LinkedInURL" class="form-label fw-bold"></label>
-                                <input asp-for="LinkedInURL" class="form-control" placeholder="LinkedIn Profil Linki" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="GitHubURL" class="form-label fw-bold"></label>
-                                <input asp-for="GitHubURL" class="form-control" placeholder="GitHub Profil Linki" />
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="PhoneNumber" class="form-label fw-bold"></label>
-                            <input asp-for="PhoneNumber" class="form-control" />
-                        </div>
-
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a asp-action="Index" class="btn btn-secondary me-md-2">İptal</a>
-                            <button type="submit" class="btn btn-success px-4">Değişiklikleri Kaydet</button>
-                        </div>
-                    </form>
-
-                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">
+                    <i class="fa-solid fa-arrow-left me-2"></i>Geri Dön
+                </a>
             </div>
+
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="ProfileId" />
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="ProfilePhotoURL" />
+
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3 border-bottom pb-2">@(isEmployer ? "Şirket Logosu" : "Profil Fotoğrafı")</h5>
+                        <div class="d-flex align-items-center gap-4">
+                            <div class="position-relative">
+                                <img src="@(string.IsNullOrEmpty(Model.ProfilePhotoURL) ? "/uploads/defaults/user-placeholder.png" : Model.ProfilePhotoURL)"
+                                     id="imgPreview"
+                                     class="rounded-circle shadow-sm object-fit-cover"
+                                     style="width: 100px; height: 100px; border: 3px solid #f8f9fa;">
+                            </div>
+                            <div class="flex-grow-1">
+                                <label class="form-label fw-bold small text-muted">Yeni Görsel Yükle</label>
+                                <input asp-for="ResimDosyasi" class="form-control" type="file" accept="image/*" onchange="previewImage(this)">
+                                <div class="form-text small">Önerilen boyut: 500x500px (JPG, PNG)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3 border-bottom pb-2 text-primary">
+                            @(isEmployer ? "Kurumsal Bilgiler" : "Akademik Bilgiler")
+                        </h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="UniversityName" class="form-label fw-bold">
+                                    @(isEmployer ? "Şirket Adı" : "Üniversite")
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="fa-solid @(isEmployer ? "fa-building" : "fa-building-columns") text-muted"></i>
+                                    </span>
+                                    <input asp-for="UniversityName" id="UniversityName" class="form-control"
+                                           placeholder="@(isEmployer ? "Örn: Tech Solutions A.Ş." : "Örn: Fırat Üniversitesi")" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="StudyProgram" class="form-label fw-bold">
+                                    @(isEmployer ? "Sektör" : "Bölüm")
+                                </label>
+                                <input asp-for="StudyProgram" id="StudyProgram" class="form-control"
+                                       placeholder="@(isEmployer ? "Örn: Yazılım, Finans" : "Örn: Yazılım Mühendisliği")" />
+                            </div>
+
+                            @if (!isEmployer)
+                            {
+                                <div class="col-md-6">
+                                    <label asp-for="GraduationYear" class="form-label fw-bold">Mezuniyet Yılı</label>
+                                    <input asp-for="GraduationYear" class="form-control" type="number" placeholder="2024" />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                            <h5 class="fw-bold m-0 text-success">
+                                @(isEmployer ? "Hakkımızda" : "Kariyer & Hakkımda")
+                            </h5>
+                        </div>
+
+                        @if (!isEmployer)
+                        {
+                            <div class="mb-4">
+                                <label asp-for="Skills" class="form-label fw-bold">Yetenekler</label>
+                                <input asp-for="Skills" id="Skills" class="form-control" placeholder="C#, SQL, React (Virgülle ayırın)" />
+                                <div class="form-text text-muted small">Yetkinliklerinizi virgülle ayırarak yazın.</div>
+                            </div>
+                        }
+
+                        <div class="mb-3 position-relative">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label asp-for="About" class="form-label fw-bold">
+                                    @(isEmployer ? "Şirket Tanıtım Yazısı" : "Hakkımda Yazısı")
+                                </label>
+                                <button type="button" id="btnAiGenerate" class="btn btn-sm btn-outline-primary border-0 fw-bold bg-light">
+                                    <i class="fa-solid fa-wand-magic-sparkles me-1"></i> AI ile Oluştur
+                                </button>
+                            </div>
+                            <textarea asp-for="About" id="AboutTextArea" class="form-control" rows="6"
+                                      placeholder="@(isEmployer ? "Şirketinizin vizyonu ve çalışma kültüründen bahsedin..." : "Kariyer hedeflerinizden ve deneyimlerinizden bahsedin...")"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3 border-bottom pb-2 text-dark">İletişim & Sosyal Medya</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="PhoneNumber" class="form-label fw-bold">Telefon</label>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="05XX XXX XX XX" />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="LinkedInURL" class="form-label fw-bold">
+                                    @(isEmployer ? "Web Sitesi (URL)" : "LinkedIn")
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white text-primary">
+                                        <i class="fa-solid @(isEmployer ? "fa-globe" : "fa-brands fa-linkedin")"></i>
+                                    </span>
+                                    <input asp-for="LinkedInURL" class="form-control"
+                                           placeholder="@(isEmployer ? "https://www.sirketiniz.com" : "https://linkedin.com/in/...")" />
+                                </div>
+                            </div>
+
+                            @if (!isEmployer)
+                            {
+                                <div class="col-md-6">
+                                    <label asp-for="GitHubURL" class="form-label fw-bold">GitHub</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white text-dark"><i class="fa-brands fa-github"></i></span>
+                                        <input asp-for="GitHubURL" class="form-control" placeholder="https://github.com/..." />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a asp-action="Index" class="btn btn-light btn-lg px-5 border">İptal</a>
+                    <button type="submit" class="btn btn-primary btn-lg px-5 fw-bold shadow-sm">
+                        <i class="fa-solid fa-check me-2"></i> Kaydet
+                    </button>
+                </div>
+
+            </form>
         </div>
     </div>
 </div>
@@ -71,4 +165,58 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        // Fotoğraf Önizleme
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imgPreview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // AI Scripti
+        $("#btnAiGenerate").click(function () {
+            const isEmployer = @(isEmployer.ToString().ToLower()); // C# değişkenini JS'e aktar
+
+            const model = {
+                StudyProgram: $("#StudyProgram").val(),
+                UniversityName: $("#UniversityName").val(),
+                Skills: $("#Skills").val()
+            };
+
+            // Validasyon
+            if (!model.StudyProgram || !model.UniversityName) {
+                alert(isEmployer
+                    ? "Lütfen önce Şirket Adı ve Sektör bilgilerini doldurunuz."
+                    : "Lütfen önce Bölüm ve Üniversite bilgilerini doldurunuz.");
+                return;
+            }
+
+            const btn = $(this);
+            const originalText = btn.html();
+            btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Yazılıyor...');
+
+            fetch('/Profile/GenerateAiAbout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(model)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    $("#AboutTextArea").val(data.text);
+                } else {
+                    alert("Hata: " + data.text);
+                }
+            })
+            .catch(err => alert("Bağlantı hatası."))
+            .finally(() => {
+                btn.prop('disabled', false).html(originalText);
+            });
+        });
+    </script>
 }

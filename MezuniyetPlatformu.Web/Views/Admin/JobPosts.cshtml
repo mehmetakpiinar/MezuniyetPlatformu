@@ -1,0 +1,61 @@
+﻿@model List<MezuniyetPlatformu.Web.ViewModels.AdminJobPostViewModel>
+@{
+    ViewData["Title"] = "İlan Yönetimi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fa-solid fa-briefcase me-2 text-primary"></i>Tüm İlanlar</h2>
+        <a asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-2"></i>Geri</a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">Başlık</th>
+                        <th>Şirket</th>
+                        <th>İşveren</th>
+                        <th>Tarih</th>
+                        <th>Durum</th>
+                        <th class="text-end pe-4">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4 fw-bold">@item.Title</td>
+                            <td>@item.CompanyName</td>
+                            <td>@item.EmployerName</td>
+                            <td>@item.CreatedDate.ToShortDateString()</td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge bg-success">Aktif</span>
+                                }
+                                else
+                                {
+
+                                    <span class="badge bg-secondary">Pasif</span>
+                                }
+                            </td>
+                            <td class="text-end pe-4">
+                                <form asp-action="DeleteJobPost" asp-route-id="@item.JobPostId" method="post" onsubmit="return confirm('Bu ilanı silmek istediğinize emin misiniz?');">
+                                    <button class="btn btn-sm btn-outline-danger hover-scale"><i class="fa-solid fa-trash"></i> Sil</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

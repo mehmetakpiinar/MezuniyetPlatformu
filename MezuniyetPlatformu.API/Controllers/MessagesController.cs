@@ -46,7 +46,7 @@ namespace MezuniyetPlatformu.API.Controllers
                 SenderUserId = senderId,
                 RecipientUserId = createDto.RecipientUserId,
                 Content = createDto.Content,
-                SentDate = DateTime.UtcNow, // <-- DÜZELTİLMİŞ KISIM
+                SentDate = DateTime.UtcNow,
                 IsRead = false,
                 ReadDate = null
             };
@@ -54,18 +54,12 @@ namespace MezuniyetPlatformu.API.Controllers
             try
             {
                 await _context.Messages.AddAsync(newMessage);
-                await _context.SaveChangesAsync(); // Hata burada oluyordu
-
-                // Not: GetConversation'ı çağırmadan önce onun da çalıştığından emin olalım.
-                // Şimdilik sadece mesajı dönelim ki CreatedAtAction hatası almayalım.
-                // return CreatedAtAction(nameof(GetConversation), new { otherUserId = newMessage.RecipientUserId }, newMessage); 
-                return Ok(newMessage); // Başarılı olursa mesajı dön (Test için daha basit)
+                await _context.SaveChangesAsync();
+                return Ok(newMessage);
             }
             catch (Exception ex)
             {
-                // Hata devam ederse, InnerException'a bakmak ŞART!
-                // Breakpoint koyup 'ex.InnerException.Message' değerini oku.
-                return StatusCode(500, $"Internal server error: {ex.InnerException?.Message ?? ex.Message}"); // InnerException'ı da ekleyelim
+                return StatusCode(500, $"Internal server error: {ex.InnerException?.Message ?? ex.Message}");
             }
         }
 
@@ -114,6 +108,60 @@ namespace MezuniyetPlatformu.API.Controllers
         }
 
 
+        [HttpGet("contacts")]
+        public async Task<IActionResult> GetContacts()
+        {
+            var currentUserIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(currentUserIdString)) return Unauthorized();
+            var currentUserId = int.Parse(currentUserIdString);
 
+            var allMessages = await _context.Messages
+                .Include(m => m.SenderUser).ThenInclude(u => u.AlumniProfile)
+                .Include(m => m.SenderUser).ThenInclude(u => u.EmployerProfile).ThenInclude(ep => ep.Company)
+
+                .Include(m => m.RecipientUser).ThenInclude(u => u.AlumniProfile)
+                .Include(m => m.RecipientUser).ThenInclude(u => u.EmployerProfile).ThenInclude(ep => ep.Company)
+
+                .Where(m => m.SenderUserId == currentUserId || m.RecipientUserId == currentUserId)
+                .OrderByDescending(m => m.SentDate)
+                .ToListAsync();
+
+            var contacts = allMessages
+                .GroupBy(m => m.SenderUserId == currentUserId ? m.RecipientUserId : m.SenderUserId)
+                .Select(g =>
+                {
+                    var lastMsg = g.First();
+
+                    var otherUser = (lastMsg.SenderUserId == currentUserId)
+                                    ? lastMsg.RecipientUser
+                                    : lastMsg.SenderUser;
+
+                    string? photoUrl = null;
+
+                    if (otherUser.AlumniProfile != null)
+                    {
+                        photoUrl = otherUser.AlumniProfile.ProfilePhotoURL;
+                    }
+                    else if (otherUser.EmployerProfile != null && otherUser.EmployerProfile.Company != null)
+                    {
+                        photoUrl = otherUser.EmployerProfile.Company.LogoURL;
+                    }
+
+                    var unreadCount = g.Count(m => m.RecipientUserId == currentUserId && !m.IsRead);
+
+                    return new ConversationDto
+                    {
+                        UserId = otherUser.UserId,
+                        FullName = $"{otherUser.FirstName} {otherUser.LastName}",
+                        ProfilePhotoUrl = photoUrl,
+                        LastMessageContent = lastMsg.Content,
+                        LastMessageDate = lastMsg.SentDate,
+                        UnreadCount = unreadCount
+                    };
+                })
+                .ToList();
+
+            return Ok(contacts);
+        }
     }
 }

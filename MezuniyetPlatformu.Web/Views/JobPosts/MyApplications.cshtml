@@ -1,0 +1,106 @@
+﻿@model List<MezuniyetPlatformu.Web.ViewModels.JobApplicationViewModel>
+@{
+    ViewData["Title"] = "Başvurularım";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark"><i class="fa-solid fa-file-signature me-2 text-primary"></i>Başvurularım</h2>
+            <p class="text-muted">Kariyer yolculuğundaki başvuru geçmişin ve durumları.</p>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-primary rounded-pill">
+                <i class="fa-solid fa-magnifying-glass me-2"></i>Yeni İlan Ara
+            </a>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 bg-white rounded-3 shadow-sm">
+            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px;">
+                <i class="fa-regular fa-paper-plane fa-3x text-muted"></i>
+            </div>
+            <h4 class="text-muted mt-3">Henüz bir başvurun yok.</h4>
+            <p class="text-secondary">Hayalindeki işe bir adım atmak için ilanları incelemeye başla!</p>
+            <a asp-action="Index" class="btn btn-primary px-4 fw-bold mt-2">İlanları Keşfet</a>
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-secondary">
+                        <tr>
+                            <th class="py-3 ps-4">Şirket & Pozisyon</th>
+                            <th>Başvuru Tarihi</th>
+                            <th>Durum</th>
+                            <th class="text-end pe-4">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var app in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-white border rounded p-2 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                            @if (!string.IsNullOrEmpty(app.CompanyLogoURL))
+                                            {
+                                                <img src="@app.CompanyLogoURL" alt="Logo" style="max-width: 100%; max-height: 100%;">
+                                            }
+                                            else
+                                            {
+                                                <i class="fa-solid fa-building text-secondary fa-lg"></i>
+                                            }
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark">@app.JobPostTitle</div>
+                                            <small class="text-muted">@app.CompanyName</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <i class="fa-regular fa-calendar me-2 text-muted"></i>
+                                    @app.ApplicationDate.ToShortDateString()
+                                </td>
+                                <td>
+                                    @if (app.Status == "Bekliyor")
+                                    {
+                                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">
+                                            <i class="fa-regular fa-clock me-1"></i> Değerlendiriliyor
+                                        </span>
+                                    }
+                                    else if (app.Status == "Onaylandı" || app.Status == "Görüşüldü")
+                                    {
+                                        <span class="badge bg-success px-3 py-2 rounded-pill">
+                                            <i class="fa-solid fa-check me-1"></i> @app.Status
+                                        </span>
+                                    }
+                                    else if (app.Status == "Reddedildi")
+                                    {
+                                        <span class="badge bg-danger px-3 py-2 rounded-pill">
+                                            <i class="fa-solid fa-xmark me-1"></i> Reddedildi
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary px-3 py-2 rounded-pill">@app.Status</span>
+                                    }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a asp-action="Detail" asp-route-id="@app.JobPostId" class="btn btn-sm btn-light border text-primary fw-bold">
+                                        İlanı Gör &rarr;
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

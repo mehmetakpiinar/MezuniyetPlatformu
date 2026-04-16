@@ -1,0 +1,202 @@
+﻿@model MezuniyetPlatformu.Web.ViewModels.EventViewModel
+@{
+    ViewData["Title"] = Model.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="bg-light min-vh-100 py-5">
+    <div class="container">
+
+        <div class="mb-4">
+            <a asp-action="Index" class="text-decoration-none text-muted fw-bold small hover-link">
+                <i class="fa-solid fa-arrow-left me-2"></i>Tüm Etkinliklere Dön
+            </a>
+        </div>
+
+        <div class="row g-5">
+            <div class="col-lg-8">
+
+                <div class="rounded-4 overflow-hidden shadow-sm mb-4 bg-white position-relative">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" class="w-100 object-fit-cover" style="height: 450px;" alt="@Model.Title">
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center justify-content-center bg-secondary bg-opacity-10" style="height: 450px;">
+                            <div class="text-center text-muted">
+                                <i class="fa-regular fa-image fa-4x mb-3 opacity-50"></i>
+                                <p class="m-0 fw-bold">Görsel Yüklenmedi</p>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="position-absolute top-0 start-0 m-4">
+                        <span class="badge bg-white text-dark shadow-sm px-3 py-2 rounded-pill fw-bold">
+                            <i class="fa-solid fa-star text-warning me-1"></i> Öne Çıkan
+                        </span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-4 shadow-sm border border-light">
+                    <h1 class="display-6 fw-bold text-dark mb-4">@Model.Title</h1>
+
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="d-flex align-items-center me-4">
+                            <div class="icon-square bg-primary bg-opacity-10 text-primary rounded-circle me-3">
+                                <i class="fa-solid fa-user-tie"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.7rem;">Düzenleyen</small>
+                                <span class="fw-bold text-dark">Fırat Üniversitesi</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold text-dark mb-3">Etkinlik Hakkında</h5>
+                    <div class="text-muted lead" style="font-size: 1.05rem; line-height: 1.9;">
+                        @Html.Raw(Model.Description.Replace("\n", "<br>"))
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sticky-top" style="top: 2rem; z-index: 10;">
+                    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                        <div class="card-header bg-primary text-white p-4 text-center border-0">
+                            <span class="d-block text-uppercase opacity-75 small fw-bold mb-1">Etkinlik Tarihi</span>
+                            <h2 class="m-0 fw-bold">
+                                @Model.EventDate.ToString("dd MMMM")
+                            </h2>
+                            <span class="d-block mt-1 opacity-75">@Model.EventDate.ToString("dddd")</span>
+                        </div>
+
+                        <div class="card-body p-4 bg-white">
+
+                            <div class="d-flex align-items-start mb-4">
+                                <div class="icon-box text-primary me-3">
+                                    <i class="fa-regular fa-clock fa-xl"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Saat</h6>
+                                    <p class="text-muted m-0">@Model.EventDate.ToString("HH:mm") - @Model.EventDate.AddHours(2).ToString("HH:mm")</p>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-start mb-4">
+                                <div class="icon-box text-danger me-3">
+                                    <i class="fa-solid fa-location-dot fa-xl"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Konum</h6>
+                                    <p class="text-muted m-0">@Model.Location</p>
+                                    <a href="#" class="small text-decoration-none fw-bold text-primary">Haritada Göster <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i></a>
+                                </div>
+                            </div>
+
+                            <hr class="my-4 opacity-10">
+
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <form asp-action="Join" asp-route-id="@Model.EventId" method="post">
+                                    @if (Model.IsJoined)
+                                    {
+                                        <div class="text-center mb-3">
+                                            <div class="text-success mb-2">
+                                                <i class="fa-solid fa-circle-check fa-3x"></i>
+                                            </div>
+                                            <h5 class="fw-bold text-success">Kaydınız Alındı!</h5>
+                                            <p class="small text-muted">Etkinlik günü görüşmek üzere.</p>
+                                        </div>
+                                        <button type="submit" class="btn btn-outline-danger w-100 py-3 rounded-pill fw-bold hover-scale">
+                                            <i class="fa-solid fa-xmark me-2"></i> Katılımı İptal Et
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm hover-scale btn-glow">
+                                            <i class="fa-solid fa-ticket me-2"></i> Hemen Katıl
+                                        </button>
+                                        <p class="text-center text-muted small mt-3 m-0">
+                                            <i class="fa-solid fa-shield-halved me-1"></i> Kontenjan sınırlıdır.
+                                        </p>
+                                    }
+                                </form>
+                            }
+                            else
+                            {
+                                <div class="text-center">
+                                    <p class="text-muted small mb-3">Etkinliğe katılmak için lütfen giriş yapın.</p>
+                                    <a asp-controller="Auth" asp-action="Login" class="btn btn-outline-primary w-100 py-2 rounded-pill fw-bold">
+                                        <i class="fa-solid fa-right-to-bracket me-2"></i> Giriş Yap
+                                    </a>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <span class="text-muted small fw-bold text-uppercase me-2">Paylaş:</span>
+                        <a href="#" class="btn btn-light btn-sm rounded-circle text-primary me-1"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="btn btn-light btn-sm rounded-circle text-primary me-1"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#" class="btn btn-light btn-sm rounded-circle text-primary"><i class="fa-brands fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Özel Tasarım CSS'leri */
+    .icon-square {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .icon-box {
+        width: 30px;
+        text-align: center;
+    }
+
+    .hover-link:hover {
+        color: var(--bs-primary) !important;
+        text-decoration: underline !important;
+    }
+
+    .hover-scale {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .hover-scale:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+
+    .btn-glow {
+        animation: glow 2s infinite;
+    }
+
+    @@keyframes glow {
+        0% {
+            box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.4);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+        }
+    }
+
+    .object-fit-cover {
+        object-fit: cover;
+    }
+</style>

@@ -23,14 +23,36 @@ namespace MezuniyetPlatformu.API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAktifIlanlar()
+        public async Task<IActionResult> GetAktifIlanlar([FromQuery] string? s, [FromQuery] string? sehir, [FromQuery] string? tur)
         {
             try
             {
-                var ilanlar = await _context.JobPosts.Include(j => j.EmployerProfile)
-                                            .Where(ilan => ilan.IsActive == true)
-                                            .OrderByDescending(ilan => ilan.PublishedDate)
-                                            .ToListAsync();
+                var query = _context.JobPosts
+                                    .Include(j => j.EmployerProfile)
+                                    .ThenInclude(e => e.Company)
+                                    .Where(j => j.IsActive == true)
+                                    .AsQueryable();
+
+                if (!string.IsNullOrEmpty(s))
+                {
+                    s = s.ToLower();
+                    query = query.Where(j => j.Title.ToLower().Contains(s) ||
+                                             j.Description.ToLower().Contains(s) ||
+                                             j.EmployerProfile.Company.CompanyName.ToLower().Contains(s));
+                }
+
+                if (!string.IsNullOrEmpty(sehir))
+                {
+                    query = query.Where(j => j.Location.ToLower().Contains(sehir.ToLower()));
+                }
+
+                if (!string.IsNullOrEmpty(tur))
+                {
+                    query = query.Where(j => j.JobType == tur);
+                }
+
+                var ilanlar = await query.OrderByDescending(j => j.PublishedDate).ToListAsync();
+
                 return Ok(ilanlar);
             }
             catch (Exception ex)
@@ -45,10 +67,8 @@ namespace MezuniyetPlatformu.API.Controllers
         {
             try
             {
-                // ---- DÜZELTİLMİŞ SORGU ----
-                // Sadece ilanı değil, ilanın sahibini (EmployerProfile) de getiriyoruz
                 var ilan = await _context.JobPosts
-                                         .Include(j => j.EmployerProfile) // <-- BU SATIR EKSİKTİ!
+                                         .Include(j => j.EmployerProfile)
                                          .FirstOrDefaultAsync(i => i.JobPostId == id);
 
                 if (ilan == null)
@@ -161,36 +181,39 @@ namespace MezuniyetPlatformu.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Isveren")]
+        [Authorize]
         public async Task<IActionResult> DeleteIlan(int id)
         {
-            var kullaniciIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(kullaniciIdString))
-            {
-                return Unauthorized();
-            }
-            var kullaniciId = int.Parse(kullaniciIdString);
-
-            var isvereninProfili = await _context.EmployerProfiles.FirstOrDefaultAsync(ip => ip.UserId == kullaniciId);
-
-            if (isvereninProfili == null)
-            {
-                return Forbid("İşlem yapmak için geçerli bir işveren profiliniz bulunamadı.");
-            }
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString)) return Unauthorized();
+            var userId = int.Parse(userIdString);
 
             var ilan = await _context.JobPosts.FindAsync(id);
+            if (ilan == null) return NotFound("Silinecek ilan bulunamadı.");
 
-            if (ilan == null)
+            bool isAdmin = User.IsInRole("Admin");
+
+            bool isOwner = false;
+
+            var employerProfile = await _context.EmployerProfiles.FirstOrDefaultAsync(ep => ep.UserId == userId);
+            if (employerProfile != null && ilan.EmployerProfileId == employerProfile.EmployerProfileId)
             {
-                return NotFound("Silinecek ilan bulunamadı.");
+                isOwner = true;
             }
 
-            if (ilan.EmployerProfileId != isvereninProfili.EmployerProfileId)
+            if (!isAdmin && !isOwner)
             {
-                return Forbid("Bu ilanı silme yetkiniz yok.");
+                return Forbid("Bu ilanı silme yetkiniz yok. Sadece ilanı açan veya Admin silebilir.");
             }
+
             try
             {
+                var applications = await _context.JobApplications.Where(a => a.JobPostId == id).ToListAsync();
+                if (applications.Any())
+                {
+                    _context.JobApplications.RemoveRange(applications);
+                }
+
                 _context.JobPosts.Remove(ilan);
                 await _context.SaveChangesAsync();
 
@@ -289,6 +312,54 @@ namespace MezuniyetPlatformu.API.Controllers
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+        }
+        [HttpGet("my-applications")]
+        [Authorize(Roles = "Ogrenci, Mezun")]
+        public async Task<IActionResult> GetMyApplications()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString)) return Unauthorized();
+            var userId = int.Parse(userIdString);
+
+            var applications = await _context.JobApplications
+                .Include(a => a.JobPost)
+                .ThenInclude(jp => jp.EmployerProfile)
+                .ThenInclude(ep => ep.Company)
+                .Where(a => a.CandidateUserId == userId)
+                .OrderByDescending(a => a.ApplicationDate)
+                .Select(a => new
+                {
+                    ApplicationId = a.ApplicationId,
+                    JobPostId = a.JobPostId,
+                    ApplicationDate = a.ApplicationDate,
+                    Status = a.Status,
+                    JobPostTitle = a.JobPost.Title,
+                    CompanyName = a.JobPost.EmployerProfile.Company.CompanyName,
+                    CompanyLogoURL = a.JobPost.EmployerProfile.Company.LogoURL
+                })
+                .ToListAsync();
+
+            return Ok(applications);
+        }
+        [HttpGet("my-posts")]
+        [Authorize(Roles = "Isveren")]
+        public async Task<IActionResult> GetMyJobPosts()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString)) return Unauthorized();
+            var userId = int.Parse(userIdString);
+
+            var employerProfile = await _context.EmployerProfiles
+                                                .FirstOrDefaultAsync(e => e.UserId == userId);
+
+            if (employerProfile == null) return BadRequest("İşveren profili bulunamadı.");
+
+            var myPosts = await _context.JobPosts
+                .Where(j => j.EmployerProfileId == employerProfile.EmployerProfileId)
+                .OrderByDescending(j => j.PublishedDate)
+                .ToListAsync();
+
+            return Ok(myPosts);
         }
     }
 }

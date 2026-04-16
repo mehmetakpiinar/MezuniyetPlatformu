@@ -45,14 +45,21 @@
                         <label asp-for="ConfirmPassword" class="small pt-2">Şifre Tekrar</label>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <select asp-for="UserTypeId" class="form-select bg-light border-0" style="height: 50px; padding-top: 1.2rem;">
+                    <div class="form-floating mb-2">
+                        <select asp-for="UserTypeId" id="userTypeSelect" class="form-select bg-light border-0" style="height: 50px; padding-top: 1.2rem;">
                             <option value="">Seçiniz...</option>
                             <option value="1">Öğrenci</option>
                             <option value="2">Mezun</option>
                             <option value="3">İşveren</option>
                         </select>
                         <label asp-for="UserTypeId" class="small pt-2">Kayıt Tipi</label>
+                    </div>
+
+                    <div class="form-floating mb-3 d-none" id="universityDiv">
+                        <select asp-for="UniversityId" class="form-select bg-light border-0" style="height: 50px; padding-top: 1.2rem;" asp-items="ViewBag.Universities">
+                            <option value="">Üniversite Seçiniz...</option>
+                        </select>
+                        <label asp-for="UniversityId" class="small pt-2">Üniversite</label>
                     </div>
 
                     <div class="d-grid mb-3">
@@ -70,7 +77,6 @@
         </div>
 
         <div class="col-lg-7 d-none d-lg-flex flex-column align-items-center justify-content-center p-5" style="background-color: #f3f2ef;">
-
             <img src="https://img.freepik.com/free-vector/business-team-brainstorming-discussing-startup-project_74855-6909.jpg"
                  alt="Kariyer İllüstrasyonu"
                  class="img-fluid mb-4"
@@ -82,8 +88,26 @@
                     İş bul, yeteneklerini geliştir ve networkünü büyüt. Hepsi tek bir platformda.
                 </p>
             </div>
-
         </div>
-
     </div>
-</div>  
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Kayıt Tipi değiştiğinde çalışır
+        document.getElementById('userTypeSelect').addEventListener('change', function () {
+            var selectedValue = this.value;
+            var uniDiv = document.getElementById('universityDiv');
+
+            // Eğer Öğrenci (1) veya Mezun (2) seçilirse Üniversite kutusunu göster
+            if (selectedValue === '1' || selectedValue === '2') {
+                uniDiv.classList.remove('d-none');
+            } else {
+                // İşveren veya boş seçilirse gizle
+                uniDiv.classList.add('d-none');
+            }
+        });
+    </script>
+}

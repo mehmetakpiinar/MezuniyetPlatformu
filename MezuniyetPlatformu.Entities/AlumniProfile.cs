@@ -22,5 +22,7 @@ namespace MezuniyetPlatformu.Entities
         public string? LinkedInURL { get; set; }
         public string? GitHubURL { get; set; }
         public string? PhoneNumber { get; set; }
+        public string? UniversityName { get; set; }
+        public string? Skills { get; set; }
     }
 }

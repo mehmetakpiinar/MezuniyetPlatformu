@@ -1,149 +1,233 @@
-/* --- KESÝN ÇÖZÜM: CSS STICKY FOOTER (GRID SYSTEM) --- */
+/* --- MEZUNIYET PLATFORMU: ULTIMATE HYBRID THEME --- */
+/* Hem sevdiðin Footer'ý korur, hem de Dashboard'u modernleþtirir */
 
-html {
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* -- RENK PALETÝ (Kurumsal & Modern) -- */
+    --primary: #2563eb; /* Ana Renk: Canlý Mavi */
+    --primary-dark: #1e40af; /* Hover Rengi */
+    --secondary: #64748b; /* Ýkincil Yazýlar */
+    --bg-body: #f1f5f9; /* Arka Plan: Soðuk Gri */
+    --bg-card: #ffffff; /* Kartlar: Beyaz */
+    --text-main: #0f172a; /* Ana Metin: Çok Koyu Lacivert */
+    --text-muted: #64748b; /* Pasif Metin */
+    --border-color: #e2e8f0; /* Kenarlýklar */
+    /* -- GÖLGELER -- */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --radius: 12px; /* Köþe Yuvarlaklýðý */
+}
+
+/* --- 1. GENEL AYARLAR & LAYOUT --- */
+html, body {
     height: 100%;
 }
 
 body {
-    min-height: 100vh; /* Ekranýn tamamýný kapla */
+    font-family: 'Inter', sans-serif; /* Outfit yerine Inter (Daha okunaklý) */
+    background-color: var(--bg-body);
+    color: var(--text-main);
     display: flex;
-    flex-direction: column; /* Alt alta dizilim */
+    flex-direction: column;
+    min-height: 100vh;
     margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background-color: #f8f9fc;
-    color: #2d3748;
-    padding-top: 80px;
+    padding-top: 70px; /* Navbar boþluðu */
 }
 
-/* Ana Ýçerik Alaný */
 main {
-    flex: 1; /* Büyü ve boþluðu doldur */
+    flex: 1; /* Footer'ý aþaðý iten sihirli kod */
     width: 100%;
-    padding-bottom: 40px; /* Footer ile içerik arasýnda tampon boþluk */
-}
-
-/* --- KRÝTÝK DÜZELTME BURADA --- */
-/* Hem 'footer' etiketini hem de '.footer' sýnýfýný hedefliyoruz */
-footer, .footer {
-    flex-shrink: 0; /* Sýkýþma */
-    position: relative !important; /* Eski 'absolute' ayarýný EZMEK için */
-    bottom: auto !important; /* Eski ayarý sýfýrla */
-    background-color: #fff;
-    width: 100%;
-    padding: 20px 0;
-    box-shadow: 0 -5px 20px rgba(0,0,0,0.02);
-    border-top: 1px solid #eaeaea;
-    line-height: normal; /* Varsayýlan satýr yüksekliðini düzelt */
 }
 
 a {
     text-decoration: none;
+    color: inherit;
+    transition: 0.2s;
 }
 
-/* --- NAVBAR (MENÜ) TASARIMI (SABÝT VE MODERN) --- */
-
-/* 1. Navbar'ý sabitle ve efekt ver */
+/* --- 2. NAVBAR (Menü) --- */
 .navbar {
-    position: fixed; /* Ekranýn tepesine çivile */
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1030; /* Diðer her þeyin üstünde dursun */
-    /* Modern Buzlu Cam Efekti */
-    background-color: rgba(255, 255, 255, 0.85) !important; /* %85 Görünür Beyaz */
-    backdrop-filter: blur(12px); /* Arkasýndan geçenleri bulanýklaþtýr */
-    -webkit-backdrop-filter: blur(12px); /* Safari için */
-
-    transition: all 0.3s ease-in-out; /* Yumuþak geçiþler */
-    padding: 1rem 2rem;
-    border-bottom: 1px solid rgba(0,0,0,0.05); /* Çok hafif çizgi */
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    padding: 0.75rem 0;
 }
-
-    /* 2. Aþaðý kaydýrýldýðýnda JS ile eklenecek sýnýf */
-    .navbar.scrolled {
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Gölge ekle */
-        background-color: rgba(255, 255, 255, 0.95) !important; /* Daha beyaz yap */
-        padding: 0.8rem 2rem; /* Hafifçe daralt (Animasyonlu küçülme) */
-    }
 
 .navbar-brand {
     font-weight: 700;
-    color: #4e73df !important;
     font-size: 1.5rem;
+    color: var(--primary) !important;
     letter-spacing: -0.5px;
 }
 
 .nav-link {
-    color: #5a5c69 !important;
     font-weight: 500;
-    margin-left: 15px;
-    transition: all 0.3s;
+    color: var(--secondary) !important;
+    font-size: 0.95rem;
+    padding: 8px 16px !important;
+    border-radius: 6px;
+    transition: all 0.2s;
 }
 
-    .nav-link:hover {
-        color: #4e73df !important;
-        transform: translateY(-2px);
+    .nav-link:hover, .nav-link.active {
+        color: var(--primary) !important;
+        background-color: #eff6ff; /* Hafif mavi arka plan */
     }
 
+/* --- 3. KARTLAR (Cards) --- */
 .card {
-    border: none;
-    border-radius: 15px;
-    background: #fff;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
-    overflow: hidden;
-    margin-bottom: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
 }
 
     .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-3px); /* Hafif yukarý kalkma */
+        border-color: #cbd5e1;
     }
 
-/* Buton Stilleri */
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+}
+
+/* --- 4. YENÝ ARAMA ÇUBUÐU (Search Wrapper) --- */
+/* Ýþ ilanlarý sayfasýndaki o modern, tek parça arama kutusu için */
+.search-wrapper {
+    background: white;
+    padding: 8px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-input-group {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 8px 15px;
+    border-right: 1px solid var(--border-color);
+}
+
+    .search-input-group:last-child {
+        border-right: none;
+    }
+    /* Sonuncuda çizgi olmasýn */
+    .search-input-group i {
+        color: var(--secondary);
+        margin-right: 10px;
+    }
+
+    .search-input-group input, .search-input-group select {
+        border: none;
+        width: 100%;
+        outline: none;
+        font-size: 0.95rem;
+        color: var(--text-main);
+        background: transparent;
+    }
+
+/* --- 5. BUTONLAR --- */
 .btn {
     border-radius: 8px;
-    padding: 10px 20px;
-    font-weight: 500;
-    transition: all 0.3s;
-    border: none;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.2s;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+    background-color: var(--primary);
+    border: none;
     color: white;
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
 }
 
     .btn-primary:hover {
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-        transform: translateY(-2px);
+        background-color: var(--primary-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 10px rgba(37, 99, 235, 0.3);
     }
 
-.btn-success {
-    background: linear-gradient(135deg, #2af598 0%, #009efd 100%);
-    box-shadow: 0 4px 15px rgba(0, 158, 253, 0.3);
-    color: white;
-}
-
 .btn-outline-primary {
-    border: 2px solid #667eea;
-    color: #667eea;
+    border: 1px solid var(--primary);
+    color: var(--primary);
     background: transparent;
 }
 
     .btn-outline-primary:hover {
-        background: #667eea;
+        background-color: var(--primary);
         color: white;
     }
 
-/* Hero Section */
-.hero-section {
-    background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
-    padding: 100px 0 150px 0;
-    color: white;
-    border-radius: 0 0 50% 50% / 4%;
-    margin-bottom: 50px;
-    position: relative;
-    overflow: hidden;
+/* --- 6. FOOTER (SENÝN SEVDÝÐÝN VERSÝYON) --- */
+/* Burayý bozmadým, sadece renkleri yeni temaya uydurdum */
+.footer-section {
+    background-color: #0f172a; /* Dark Theme */
+    color: #94a3b8;
+    padding: 60px 0 30px 0;
+    margin-top: auto;
+    font-size: 0.95rem;
+    border-top: 4px solid var(--primary);
+}
+
+.footer-link {
+    color: #94a3b8;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+    .footer-link:hover {
+        color: #fff;
+        transform: translateX(5px);
+    }
+
+.social-icons a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 50%;
+    margin-right: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .social-icons a:hover {
+        background-color: var(--primary);
+        transform: translateY(-3px);
+    }
+
+.text-info {
+    color: #38bdf8 !important;
+}
+
+/* --- 7. ROZETLER & DÝÐER --- */
+.badge-soft {
+    background-color: #eff6ff;
+    color: var(--primary);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: inline-block;
+}
+
+#loader-wrapper {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(5px);
 }

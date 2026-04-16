@@ -18,6 +18,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MezuniyetPlatformu.Business\MezuniyetPlatformu.Business.csproj" />
+    <ProjectReference Include="..\MezuniyetPlatformu.DataAccess\MezuniyetPlatformu.DataAccess.csproj" />
+    <ProjectReference Include="..\MezuniyetPlatformu.Entities\MezuniyetPlatformu.Entities.csproj" />
   </ItemGroup>
 
 </Project>

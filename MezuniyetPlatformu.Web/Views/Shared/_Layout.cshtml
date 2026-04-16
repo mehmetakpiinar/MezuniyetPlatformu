@@ -4,99 +4,375 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MezuniyetPlatformu.Web</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>@ViewData["Title"] - Mezun Platformu</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MezuniyetPlatformu.Web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --sidebar-width: 260px;
+            --bg-body: #f3f4f6;
+            --text-dark: #111827;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            z-index: 1030;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s;
+        }
+
+        .sidebar-brand {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .sidebar-menu {
+            padding: 1.5rem 1rem;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #4b5563;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+            .nav-link:hover, .nav-link.active {
+                background-color: #eef2ff;
+                color: var(--primary-color);
+            }
+
+            .nav-link i {
+                width: 24px;
+                font-size: 1.1rem;
+                margin-right: 10px;
+                text-align: center;
+            }
+
+        /* MAIN CONTENT */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            transition: all 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            height: 70px;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        @@media (max-width: 992px) {
+            .sidebar
+
+        {
+            transform: translateX(-100%);
+        }
+
+        .main-wrapper {
+            margin-left: 0;
+        }
+
+        .sidebar.show {
+            transform: translateX(0);
+        }
+
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav id="mainNavbar" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fa-solid fa-graduation-cap me-2"></i>Mezuniyet<span class="text-primary">Platformu</span>
+
+    <nav class="sidebar" id="sidebar">
+        <a href="/" class="sidebar-brand">
+            <i class="fa-solid fa-graduation-cap me-2"></i> MezunPort
+        </a>
+
+        <div class="sidebar-menu">
+
+            @if (User.IsInRole("Admin"))
+            {
+                <small class="text-danger fw-bold px-3 mb-2 d-block" style="font-size: 11px; letter-spacing: 1px;">YÖNETİCİ PANELİ</small>
+
+                <a asp-controller="Admin" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
+                    <i class="fa-solid fa-gauge-high"></i> Genel Bakış
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house me-1"></i>Ana Sayfa</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="JobPosts" asp-action="Index"><i class="fa-solid fa-briefcase me-1"></i>İş İlanları</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ExperiencePosts" asp-action="Index"><i class="fa-solid fa-pen-nib me-1"></i>Deneyimler</a>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav">
+
+                <a asp-controller="Admin" asp-action="JobPosts" class="nav-link">
+                    <i class="fa-solid fa-briefcase"></i> İlan Yönetimi
+                </a>
+
+                <a asp-controller="Admin" asp-action="ExperiencePosts" class="nav-link">
+                    <i class="fa-solid fa-pen-nib"></i> Paylaşım Yönetimi
+                </a>
+
+                <a asp-controller="Admin" asp-action="Users" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Users" ? "active" : "")">
+                    <i class="fa-solid fa-users"></i> Kullanıcılar
+                </a>
+
+                <a asp-controller="Admin" asp-action="Universities" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Universities" ? "active" : "")">
+                    <i class="fa-solid fa-building-columns"></i> Üniversiteler
+                </a>
+
+                <div class="mb-4 border-bottom pb-2"></div>
+            }
+            <small class="text-muted fw-bold px-3 mb-2 d-block" style="font-size: 11px; letter-spacing: 1px;">GENEL</small>
+
+            <a asp-controller="Home" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
+                <i class="fa-solid fa-house"></i> Ana Sayfa
+            </a>
+
+            @if (User.IsInRole("Ogrenci") || User.IsInRole("Mezun"))
+            {
+                <a asp-controller="Home" asp-action="Announcements" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Announcements" ? "active" : "")">
+                    <i class="fa-solid fa-bullhorn"></i> Duyurular
+                </a>
+            }
+
+            <a asp-controller="Profile" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Profile" ? "active" : "")">
+                <i class="fa-regular fa-id-card"></i> Profilim
+            </a>
+
+            <small class="text-muted fw-bold px-3 mb-2 mt-4 d-block" style="font-size: 11px; letter-spacing: 1px;">KARİYER</small>
+
+            <a asp-controller="JobPosts" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "JobPosts" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
+                <i class="fa-solid fa-briefcase"></i> İş İlanları
+            </a>
+
+            <a asp-controller="ExperiencePosts" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "ExperiencePosts" ? "active" : "")">
+                <i class="fa-solid fa-pen-nib"></i> Deneyimler
+            </a>
+
+            <a asp-controller="Events" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Events" ? "active" : "")">
+                <i class="fa-solid fa-calendar-days"></i> Etkinlikler
+            </a>
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                // ÜNİVERSİTE TEMSİLCİSİ (UniversityRep) MENÜSÜ
+                @if (User.IsInRole("UniversityRep"))
+                {
+                    <small class="text-muted fw-bold px-3 mb-2 mt-4 d-block" style="font-size: 11px; letter-spacing: 1px;">ÜNİVERSİTE YÖNETİMİ</small>
+
+                    <a asp-controller="University" asp-action="Dashboard" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Dashboard" ? "active" : "")">
+                        <i class="fa-solid fa-chart-pie"></i> Yönetim Paneli
+                    </a>
+
+                    <a asp-controller="University" asp-action="MyStudents" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "MyStudents" ? "active" : "")">
+                        <i class="fa-solid fa-user-graduate"></i> Öğrencilerim
+                    </a>
+                }
+
+                // İŞVEREN MENÜSÜ
+                else if (User.IsInRole("Isveren"))
+                {
+                    <small class="text-muted fw-bold px-3 mb-2 mt-4 d-block" style="font-size: 11px; letter-spacing: 1px;">İŞVEREN PANELİ</small>
+
+                    <a asp-controller="JobPosts" asp-action="MyPosts" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "MyPosts" ? "active" : "")">
+                        <i class="fa-solid fa-list-check"></i> İlanlarım
+                    </a>
+
+                    <a asp-controller="JobPosts" asp-action="Create" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Create" ? "active" : "")">
+                        <i class="fa-solid fa-plus-circle"></i> İlan Ekle
+                    </a>
+                }
+
+                // ÖĞRENCİ/MEZUN MENÜSÜ
+                else if (User.IsInRole("Ogrenci") || User.IsInRole("Mezun"))
+                {
+                    <small class="text-muted fw-bold px-3 mb-2 mt-4 d-block" style="font-size: 11px; letter-spacing: 1px;">BAŞVURULAR</small>
+
+                    <a asp-controller="JobPosts" asp-action="MyApplications" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "MyApplications" ? "active" : "")">
+                        <i class="fa-solid fa-file-signature"></i> Başvurularım
+                    </a>
+                }
+            }
+
+            <small class="text-muted fw-bold px-3 mb-2 mt-4 d-block" style="font-size: 11px; letter-spacing: 1px;">İLETİŞİM</small>
+
+            <a asp-controller="Messages" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Messages" ? "active" : "")">
+                <i class="fa-regular fa-envelope"></i> Mesajlar
+            </a>
+        </div>
+
+        <div class="p-3 border-top">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form asp-controller="Auth" asp-action="Logout" method="post">
+                    <button type="submit" class="btn btn-light w-100 text-danger fw-bold d-flex align-items-center justify-content-center gap-2">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Çıkış Yap
+                    </button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Auth" asp-action="Login" class="btn btn-primary w-100 fw-bold">
+                    Giriş Yap
+                </a>
+            }
+        </div>
+    </nav>
+
+    <div class="main-wrapper">
+
+        <header class="topbar">
+            <button class="btn btn-light d-lg-none me-2" id="sidebarToggle">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <h5 class="fw-bold mb-0 text-secondary d-none d-md-block">@ViewData["Title"]</h5>
+
+            <div class="d-flex align-items-center gap-4">
+
+                <div class="position-relative cursor-pointer">
+                    <i class="fa-regular fa-bell fa-lg text-secondary"></i>
+                </div>
+
+                <div class="dropdown">
+                    <div class="user-menu" data-bs-toggle="dropdown">
+                        <div class="text-end d-none d-md-block">
+                            <span class="d-block fw-bold small text-dark">@(User.Identity.Name ?? "Misafir")</span>
+                            <span class="d-block text-muted" style="font-size: 11px;">
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <span class="text-danger fw-bold">Sistem Yöneticisi</span>
+                                }
+                                else if (User.IsInRole("Isveren"))
+                                {
+                                    <text>İşveren</text>
+                                }
+                                else if (User.IsInRole("Ogrenci"))
+                                {
+                                    <text>Öğrenci</text>
+                                }
+                                else if (User.IsInRole("UniversityRep"))
+                                {
+                                    <text>Üniv. Temsilcisi</text>
+                                }
+                                else
+                                {
+                                    <text>Kullanıcı</text>
+                                }
+                            </span>
+                        </div>
+                        <div class="user-avatar">
+                            @(User.Identity.Name?.Substring(0, 1).ToUpper() ?? "M")
+                        </div>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2">
+                        <li><a class="dropdown-item" asp-controller="Profile" asp-action="Index">Profili Düzenle</a></li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index">Admin Paneli</a></li>
+                        }
+                        <li><hr class="dropdown-divider"></li>
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Index" title="Profilim">
-                                    <i class="fa-solid fa-user-circle me-1"></i>Merhaba, @(User.Identity?.Name ?? User.FindFirstValue(ClaimTypes.Email) ?? User.FindFirstValue("email") ?? "Kullanıcı")
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Messages" asp-action="Index"><i class="fa-solid fa-envelope me-1"></i>Mesajlar</a>
-                            </li>
-                            <li class="nav-item">
-                                <form class="form-inline" asp-controller="Auth" asp-action="Logout" method="post">
-                                    <button type="submit" class="nav-link btn btn-link text-dark border-0 bg-transparent">Çıkış Yap</button>
+                            <li>
+                                <form asp-controller="Auth" asp-action="Logout" method="post">
+                                    <button class="dropdown-item text-danger">Çıkış Yap</button>
                                 </form>
                             </li>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Register">Kayıt Ol</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Login">Giriş Yap</a>
-                            </li>
+                            <li><a class="dropdown-item" asp-controller="Auth" asp-action="Login">Giriş Yap</a></li>
                         }
                     </ul>
                 </div>
             </div>
-        </nav>
-    </header>
+        </header>
 
-    <main role="main" class="pb-3">
-
-        <div class="container">
-            @if (TempData["SuccessMessage"] != null)
-            {
-                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                    @TempData["SuccessMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            }
-            @if (TempData["ErrorMessage"] != null)
-            {
-                <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-                    @TempData["ErrorMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            }
+        <div class="p-4">
+            @RenderBody()
         </div>
 
-        @RenderBody()
-    </main>
-
-    <footer >
-        <div class="container text-center">
-            &copy; 2025 - MezuniyetPlatformu.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Gizlilik</a>
-        </div>
-    </footer>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        // Mobil Menü Aç/Kapa
+        $("#sidebarToggle").click(function() {
+            $("#sidebar").toggleClass("show");
+        });
+
+        // Toastr Mesajları
+        var successMsg = '@TempData["SuccessMessage"]';
+        var errorMsg = '@TempData["ErrorMessage"]';
+
+        if (successMsg) {
+            toastr.success(successMsg, 'Başarılı', { timeOut: 3000 });
+        }
+        if (errorMsg) {
+            toastr.error(errorMsg, 'Hata', { timeOut: 3000 });
+        }
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

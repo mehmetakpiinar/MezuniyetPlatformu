@@ -1,106 +1,372 @@
-﻿@using System.Security.Claims
-@model IEnumerable<MezuniyetPlatformu.Web.ViewModels.JobPostsViewModel>
+﻿@model IEnumerable<MezuniyetPlatformu.Web.ViewModels.JobPostsViewModel>
 @{
-    ViewData["Title"] = "Açık Pozisyonlar";
+    ViewData["Title"] = "İş İlanları";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
-    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    if (string.IsNullOrEmpty(currentUserId)) { currentUserId = User.FindFirstValue("nameid"); }
-    if (string.IsNullOrEmpty(currentUserId)) { currentUserId = User.FindFirstValue("sub"); }
+    var jobType = ViewBag.JobType as string;
 }
 
-<div class="bg-white border-bottom py-5 mb-5">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div>
-            <h1 class="fw-bold text-dark mb-2">💼 İş İlanları</h1>
-            <p class="text-muted mb-0">Kariyerine yön verecek en yeni fırsatları keşfet.</p>
-        </div>
-
-        @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Isveren"))
-        {
-            <a asp-action="Create" class="btn btn-success rounded-pill px-4 shadow-sm">
-                <i class="fa-solid fa-plus me-2"></i> İlan Yayınla
-            </a>
-        }
-    </div>
-</div>
-
-<div class="container">
-
-    @if (ViewBag.ErrorMessage != null)
-    {
-        <div class="alert alert-danger shadow-sm border-0" role="alert">
-            <i class="fa-solid fa-circle-exclamation me-2"></i> @ViewBag.ErrorMessage
-        </div>
-    }
-
-    @if (!Model.Any())
-    {
-        <div class="text-center py-5">
-            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                <i class="fa-solid fa-briefcase fa-2x text-muted"></i>
-            </div>
-            <h4 class="text-muted">Aktif ilan bulunamadı.</h4>
-            <p class="text-secondary">Lütfen daha sonra tekrar kontrol ediniz.</p>
-        </div>
-    }
-    else
-    {
+<div class="bg-light min-vh-100 py-5">
+    <div class="container">
         <div class="row g-4">
-            @foreach (var ilan in Model)
-            {
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 border-0 shadow-sm hover-lift">
-                        <div class="card-body p-4 d-flex flex-column">
 
-                            <div class="d-flex mb-3">
-                                <div class="bg-light rounded-3 d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width: 50px; height: 50px;">
-                                    <i class="fa-solid fa-building text-primary fa-lg"></i>
-                                </div>
-                                <div>
-                                    <h5 class="card-title mb-1 fw-bold text-dark" style="font-size: 1.1rem;">@ilan.Title</h5>
-                                    <small class="text-muted">Şirket Adı</small>
-                                </div>
+            <div class="col-lg-3">
+                <div class="filter-sidebar sticky-top" style="top: 90px; z-index: 10;">
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-body p-4">
+
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="fw-bold text-dark m-0">Filtrele</h6>
+                                <a asp-action="Index" class="text-decoration-none small text-primary fw-bold">Temizle</a>
                             </div>
 
-                            <div class="mb-3">
-                                <span class="badge bg-light text-dark border me-1 fw-normal px-2 py-1">
-                                    @ilan.JobType
-                                </span>
-                                <span class="badge bg-light text-dark border fw-normal px-2 py-1">
-                                    @(ilan.Location ?? "Uzaktan")
-                                </span>
-                            </div>
-
-                            <p class="card-text text-secondary small mb-4 flex-grow-1">
-                                @(ilan.Description.Length > 100 ? ilan.Description.Substring(0, 100) + "..." : ilan.Description)
-                            </p>
-
-                            <div class="d-flex justify-content-between align-items-center border-top pt-3 mt-auto">
-                                <small class="text-muted" style="font-size: 0.75rem;">
-                                    <i class="fa-regular fa-clock me-1"></i> @ilan.PublishedDate.ToShortDateString()
-                                </small>
-
-                                <a asp-controller="JobPosts" asp-action="Detail" asp-route-id="@ilan.JobPostId" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                                    İncele
-                                </a>
-                            </div>
-
-                            @if (User.Identity?.IsAuthenticated == true &&
-                                                User.IsInRole("Isveren") &&
-                                                ilan.EmployerProfile?.UserId.ToString() == currentUserId)
-                            {
-                                <div class="position-absolute top-0 end-0 p-3">
-                                    <a asp-controller="JobPosts" asp-action="Applications" asp-route-id="@ilan.JobPostId" class="btn btn-warning btn-sm shadow-sm text-white" title="Başvurular">
-                                        <i class="fa-solid fa-users"></i>
-                                    </a>
+                            <form asp-action="Index" method="get" id="filterForm">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold text-muted text-uppercase ls-1">Anahtar Kelime</label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text bg-white border-end-0 ps-3"><i class="fa-solid fa-search text-muted"></i></span>
+                                        <input type="text" name="s" class="form-control border-start-0 ps-2" placeholder="Unvan, yetenek..." value="@ViewBag.SearchTerm">
+                                    </div>
                                 </div>
-                            }
 
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold text-muted text-uppercase ls-1">Konum</label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text bg-white border-end-0 ps-3"><i class="fa-solid fa-location-dot text-muted"></i></span>
+                                        <input type="text" name="sehir" class="form-control border-start-0 ps-2" placeholder="Şehir veya ilçe" value="@ViewBag.Location">
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold text-muted text-uppercase ls-1 mb-2">Çalışma Tipi</label>
+                                    <div class="d-flex flex-column gap-2">
+                                        @foreach (var type in new[] { "Tam Zamanlı", "Yarı Zamanlı", "Staj", "Uzaktan" })
+                                        {
+                                            <label class="custom-radio">
+                                                <input type="radio" name="tur" value="@type" @(jobType == type ? "checked" : "")>
+                                                <span class="radio-mark"></span>
+                                                <span class="radio-text">@type</span>
+                                            </label>
+                                        }
+                                        <label class="custom-radio">
+                                            <input type="radio" name="tur" value="" @(string.IsNullOrEmpty(jobType) ? "checked" : "")>
+                                            <span class="radio-mark"></span>
+                                            <span class="radio-text">Tümü</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary rounded-pill fw-bold shadow-sm py-2 transition-all hover-scale-sm">
+                                        Sonuçları Getir
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
-            }
+            </div>
+
+            <style>
+                .hover-scale-sm:hover {
+                    transform: scale(1.02);
+                }
+
+                .transition-all {
+                    transition: all 0.2s ease-in-out;
+                }
+            </style>
+
+            <div class="col-lg-9">
+                <div class="d-flex justify-content-between align-items-end mb-4 px-2">
+                    <div>
+                        <h4 class="fw-bold text-dark mb-1">
+                            @(string.IsNullOrEmpty(ViewBag.SearchTerm) ? "Sizin için önerilen ilanlar" : $"\"{ViewBag.SearchTerm}\" için sonuçlar")
+                        </h4>
+                        <p class="text-muted small mb-0">Toplam <span class="fw-bold text-dark">@(Model != null ? Model.Count() : 0)</span> ilan bulundu.</p>
+                    </div>
+
+                    @if (User.IsInRole("Isveren"))
+                    {
+                        <a asp-action="Create" class="btn btn-dark rounded-pill px-4 fw-bold shadow-sm hover-scale">
+                            <i class="fa-solid fa-plus me-2"></i>İlan Yayınla
+                        </a>
+                    }
+                </div>
+
+                @if (Model == null || !Model.Any())
+                {
+                    <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+                        <div class="mb-3">
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fa-solid fa-magnifying-glass fa-2x text-muted opacity-50"></i>
+                            </div>
+                        </div>
+                        <h5 class="fw-bold text-dark">Aradığın kriterlere uygun ilan yok.</h5>
+                        <p class="text-muted small">Filtreleri temizleyerek veya farklı kelimelerle tekrar deneyebilirsin.</p>
+                        <a asp-action="Index" class="btn btn-outline-primary rounded-pill px-4 fw-bold btn-sm mt-2">Tüm İlanları Listele</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex flex-column gap-3">
+                        @foreach (var ilan in Model)
+                        {
+                            <div class="card job-card border-0 shadow-sm rounded-4 p-4 position-relative overflow-hidden">
+                                <div class="row align-items-center">
+
+                                    <div class="col-12 col-md-auto mb-3 mb-md-0">
+                                        <div class="company-logo-box bg-white border rounded-3 d-flex align-items-center justify-content-center p-2 shadow-sm">
+                                            @if (ilan.Company != null && !string.IsNullOrEmpty(ilan.Company.LogoURL))
+                                            {
+                                                <img src="@ilan.Company.LogoURL" alt="@ilan.Company.CompanyName" class="img-fluid object-fit-contain">
+                                            }
+                                            else
+                                            {
+                                                <i class="fa-solid fa-building fa-2x text-secondary opacity-25"></i>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="col ms-md-2">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h5 class="fw-bold text-dark mb-1">
+                                                    <a asp-action="Detail" asp-route-id="@ilan.JobPostId" class="text-dark text-decoration-none stretched-link hover-underline">
+                                                        @ilan.Title
+                                                    </a>
+                                                </h5>
+                                                <div class="text-muted small fw-semibold mb-2">
+                                                    <i class="fa-solid fa-building me-1 text-primary"></i>
+                                                    @(ilan.Company?.CompanyName ?? "Gizli Firma")
+                                                </div>
+                                            </div>
+                                            <div class="d-none d-md-block z-index-10">
+                                                <button class="btn btn-icon btn-light rounded-circle text-muted" title="Kaydet">
+                                                    <i class="fa-regular fa-bookmark"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-wrap gap-2 align-items-center mt-1">
+                                            <span class="badge-soft-gray small">
+                                                <i class="fa-solid fa-location-dot me-1"></i> @(ilan.Location ?? "Belirtilmemiş")
+                                            </span>
+
+                                            <span class="badge-soft-gray small">
+                                                <i class="fa-regular fa-clock me-1"></i> @ilan.PublishedDate.ToString("dd MMM")
+                                            </span>
+
+                                            @if (ilan.JobType == "Uzaktan")
+                                            {
+                                                <span class="badge-soft-purple small"><i class="fa-solid fa-wifi me-1"></i> Remote</span>
+                                            }
+                                            else if (ilan.JobType == "Staj")
+                                            {
+                                                <span class="badge-soft-orange small"><i class="fa-solid fa-graduation-cap me-1"></i> Staj</span>
+                                            }
+                                            else if (ilan.JobType == "Tam Zamanlı")
+                                            {
+                                                <span class="badge-soft-blue small">Tam Zamanlı</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge-soft-green small">@ilan.JobType</span>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-auto mt-3 mt-md-0 d-grid d-md-block">
+                                        <a asp-action="Detail" asp-route-id="@ilan.JobPostId" class="btn btn-primary rounded-pill fw-bold px-4 py-2 shadow-sm action-btn">
+                                            Başvur
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
         </div>
-    }
+    </div>
 </div>
+
+<style>
+    /* --- GENEL AYARLAR --- */
+    body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    .ls-1 {
+        letter-spacing: 0.5px;
+    }
+
+    .z-index-10 {
+        z-index: 10;
+        position: relative;
+    }
+
+    /* --- İLAN KARTI --- */
+    .job-card {
+        transition: all 0.25s ease-in-out;
+        border: 1px solid rgba(0,0,0,0.04) !important;
+    }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+            border-color: rgba(0,0,0,0.0) !important;
+        }
+
+    .hover-underline:hover {
+        text-decoration: underline !important;
+        color: var(--bs-primary) !important;
+    }
+
+    /* Logo Kutusu */
+    .company-logo-box {
+        width: 72px;
+        height: 72px;
+    }
+
+        .company-logo-box img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+    /* --- SOFT ROZETLER (Global Trend) --- */
+    .badge-soft-gray {
+        background-color: #f3f4f6;
+        color: #4b5563;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    .badge-soft-blue {
+        background-color: #dbeafe;
+        color: #1e40af;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    .badge-soft-purple {
+        background-color: #f3e8ff;
+        color: #7e22ce;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    .badge-soft-orange {
+        background-color: #ffedd5;
+        color: #c2410c;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    .badge-soft-green {
+        background-color: #dcfce7;
+        color: #15803d;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    /* --- INPUTLAR --- */
+    .input-group-merge .form-control {
+        background-color: #f8f9fa;
+        border-color: #eee;
+    }
+
+        .input-group-merge .form-control:focus {
+            background-color: #fff;
+            box-shadow: none;
+            border-color: var(--bs-primary);
+        }
+
+    .input-group-merge .input-group-text {
+        background-color: #f8f9fa;
+        border-color: #eee;
+    }
+
+    /* --- CUSTOM RADIO --- */
+    .custom-radio {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        padding: 6px 8px;
+        border-radius: 6px;
+        transition: background 0.2s;
+    }
+
+        .custom-radio:hover {
+            background-color: #f8f9fa;
+        }
+
+        .custom-radio input {
+            display: none;
+        }
+
+    .radio-mark {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #cbd5e1;
+        border-radius: 50%;
+        margin-right: 10px;
+        position: relative;
+        transition: all 0.2s;
+    }
+
+    .custom-radio input:checked ~ .radio-mark {
+        border-color: var(--bs-primary);
+        background-color: var(--bs-primary);
+    }
+
+        .custom-radio input:checked ~ .radio-mark::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+        }
+
+    .radio-text {
+        font-size: 0.9rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .custom-radio input:checked ~ .radio-text {
+        color: var(--bs-primary);
+        font-weight: 600;
+    }
+
+    /* --- BUTONLAR --- */
+    .btn-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+        .btn-icon:hover {
+            background-color: #e2e6ea;
+            color: var(--bs-dark);
+        }
+
+    .hover-scale:hover {
+        transform: scale(1.02);
+    }
+</style>

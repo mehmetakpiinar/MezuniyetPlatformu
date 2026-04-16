@@ -7,11 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MezuniyetPlatformu.Entities
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MezuniyetPlatformu.DataAccess", "MezuniyetPlatformu.DataAccess\MezuniyetPlatformu.DataAccess.csproj", "{DBFD3217-4926-4141-A893-E2E19164B03B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MezuniyetPlatformu.Business", "MezuniyetPlatformu.Business\MezuniyetPlatformu.Business.csproj", "{7CE6C31D-CA9A-46CA-A4C2-ABFFE16A258E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MezuniyetPlatformu.API", "MezuniyetPlatformu.API\MezuniyetPlatformu.API.csproj", "{3F388B49-6F9E-49BC-A17D-DB42B87CCF76}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MezuniyetPlatformu.Web", "MezuniyetPlatformu.Web\MezuniyetPlatformu.Web.csproj", "{B21584D3-A09D-40A7-A0A1-18668C1FC1AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MezuniyetPlatformu.Business", "MezuniyetPlatformu.Business\MezuniyetPlatformu.Business.csproj", "{CFEA5860-3508-9B68-8249-D2A57EAB45B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +27,6 @@ Global
 		{DBFD3217-4926-4141-A893-E2E19164B03B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBFD3217-4926-4141-A893-E2E19164B03B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBFD3217-4926-4141-A893-E2E19164B03B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7CE6C31D-CA9A-46CA-A4C2-ABFFE16A258E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7CE6C31D-CA9A-46CA-A4C2-ABFFE16A258E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7CE6C31D-CA9A-46CA-A4C2-ABFFE16A258E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7CE6C31D-CA9A-46CA-A4C2-ABFFE16A258E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3F388B49-6F9E-49BC-A17D-DB42B87CCF76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3F388B49-6F9E-49BC-A17D-DB42B87CCF76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F388B49-6F9E-49BC-A17D-DB42B87CCF76}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{B21584D3-A09D-40A7-A0A1-18668C1FC1AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B21584D3-A09D-40A7-A0A1-18668C1FC1AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B21584D3-A09D-40A7-A0A1-18668C1FC1AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFEA5860-3508-9B68-8249-D2A57EAB45B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFEA5860-3508-9B68-8249-D2A57EAB45B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFEA5860-3508-9B68-8249-D2A57EAB45B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFEA5860-3508-9B68-8249-D2A57EAB45B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

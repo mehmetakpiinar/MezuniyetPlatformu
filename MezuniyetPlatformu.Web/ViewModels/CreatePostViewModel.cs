@@ -12,5 +12,7 @@ namespace MezuniyetPlatformu.Web.ViewModels
         [Required(ErrorMessage = "İçerik zorunludur.")]
         [Display(Name = "Deneyim İçeriği")]
         public string Content { get; set; }
+        public IFormFile? ImageUpload { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

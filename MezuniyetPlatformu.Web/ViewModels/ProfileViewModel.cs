@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http; // IFormFile için gerekli
 
 namespace MezuniyetPlatformu.Web.ViewModels
 {
@@ -7,11 +8,13 @@ namespace MezuniyetPlatformu.Web.ViewModels
         public int ProfileId { get; set; }
         public int UserId { get; set; }
 
-        // Kullanıcının Adı/Soyadı bilgilerini göstermek için
         public UserViewModel User { get; set; }
 
-        [Display(Name = "Profil Fotoğrafı URL")]
+        [Display(Name = "Profil Fotoğrafı")]
         public string? ProfilePhotoURL { get; set; }
+
+        [Display(Name = "Fotoğraf Yükle")]
+        public IFormFile? ResimDosyasi { get; set; }
 
         [Display(Name = "Hakkımda")]
         public string? About { get; set; }
@@ -30,5 +33,11 @@ namespace MezuniyetPlatformu.Web.ViewModels
 
         [Display(Name = "Telefon Numarası")]
         public string? PhoneNumber { get; set; }
+
+        [Display(Name = "Üniversite Adı")]
+        public string? UniversityName { get; set; }
+
+        [Display(Name = "Yetenekler")]
+        public string? Skills { get; set; }
     }
 }

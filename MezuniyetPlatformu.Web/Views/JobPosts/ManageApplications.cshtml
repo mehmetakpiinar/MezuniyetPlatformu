@@ -1,0 +1,107 @@
+﻿@model List<MezuniyetPlatformu.Web.ViewModels.JobApplicationViewModel>
+@{
+    ViewData["Title"] = "Gelen Başvurular";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="/JobPosts/MyPosts" class="text-decoration-none text-muted small mb-1 d-inline-block fw-bold hover-lift">
+                <i class="fa-solid fa-arrow-left me-1"></i> İlanlarıma Dön
+            </a>
+            <h3 class="fw-bold m-0 text-dark">Gelen Başvurular</h3>
+        </div>
+        <div class="badge bg-primary bg-opacity-10 text-primary fs-6 px-3 py-2 rounded-pill border border-primary-subtle">
+            Toplam: @Model.Count() Aday
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 bg-white rounded shadow-sm border border-light">
+            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                <i class="fa-regular fa-user fa-2x text-muted opacity-50"></i>
+            </div>
+            <h5 class="text-muted fw-bold">Henüz başvuru yok.</h5>
+            <p class="text-secondary small">İlanınızın daha fazla kişiye ulaşmasını bekleyin.</p>
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-secondary small text-uppercase">
+                        <tr>
+                            <th class="ps-4 py-3">Aday Bilgisi</th>
+                            <th>İletişim</th>
+                            <th>Başvuru Tarihi</th>
+                            <th>Durum</th>
+                            <th class="text-end pe-4">Aksiyon</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var app in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold me-3 shadow-sm" style="width: 40px; height: 40px;">
+                                            @(app.CandidateUser?.FirstName?.Substring(0, 1) ?? "U")
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark">
+                                                @(app.CandidateUser?.FirstName) @(app.CandidateUser?.LastName)
+                                            </div>
+                                            <small class="text-muted">Aday</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="mailto:@(app.CandidateUser?.Email)" class="text-decoration-none text-secondary small fw-bold">
+                                        <i class="fa-regular fa-envelope me-1"></i> @app.CandidateUser?.Email
+                                    </a>
+                                </td>
+                                <td class="text-muted small">
+                                    @app.ApplicationDate.ToString("dd MMM yyyy")
+                                </td>
+                                <td>
+                                    @if (app.Status == "Bekliyor")
+                                    {
+                                        <span class="badge bg-warning bg-opacity-10 text-dark border border-warning-subtle rounded-pill px-3">
+                                            <i class="fa-regular fa-clock me-1 small"></i> Bekliyor
+                                        </span>
+                                    }
+                                    else if (app.Status == "Onaylandı")
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle rounded-pill px-3">
+                                            <i class="fa-solid fa-check me-1 small"></i> Onaylandı
+                                        </span>
+                                    }
+                                    else if (app.Status == "Reddedildi")
+                                    {
+                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger-subtle rounded-pill px-3">
+                                            <i class="fa-solid fa-xmark me-1 small"></i> Reddedildi
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-light text-dark border rounded-pill px-3">@app.Status</span>
+                                    }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a asp-controller="Messages" asp-action="Chat" asp-route-userId="@app.CandidateUserId"
+                                       class="btn btn-outline-primary btn-sm rounded-pill fw-bold px-3 shadow-sm">
+                                        <i class="fa-regular fa-comment-dots me-1"></i> Mesaj
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

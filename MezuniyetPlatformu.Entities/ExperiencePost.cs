@@ -11,11 +11,10 @@ namespace MezuniyetPlatformu.Entities
     public class ExperiencePost
     {
         [Key]
-        public int PostId { get; set; } 
+        public int PostId { get; set; }
 
-        public int AuthorUserId { get; set; } 
+        public int AuthorUserId { get; set; }
 
-  
         [ForeignKey("AuthorUserId")]
         public User AuthorUser { get; set; }
 
@@ -24,7 +23,9 @@ namespace MezuniyetPlatformu.Entities
         public string Title { get; set; }
 
         [Required]
-        public string Content { get; set; } 
+        public string Content { get; set; }
+
+        public string? ImageUrl { get; set; } 
 
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }

@@ -1,0 +1,87 @@
+﻿@model List<MezuniyetPlatformu.Web.ViewModels.AdminUserViewModel>
+@{
+    ViewData["Title"] = "Kullanıcı Yönetimi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fa-solid fa-users me-2 text-primary"></i>Kullanıcı Listesi</h2>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fa-solid fa-arrow-left me-2"></i>Panele Dön
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0 align-middle">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="py-3 ps-4">Ad Soyad</th>
+                            <th class="py-3">E-Posta</th>
+                            <th class="py-3">Rol</th>
+                            <th class="py-3">Kayıt Tarihi</th>
+                            <th class="py-3 text-end pe-4">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold">@user.FirstName @user.LastName</td>
+                                <td><a href="mailto:@user.Email" class="text-decoration-none">@user.Email</a></td>
+                                <td>
+                                    @if (user.Role == "Admin")
+                                    {
+                                        <span class="badge bg-danger">YÖNETİCİ</span>
+                                    }
+                                    else if (user.Role == "Isveren")
+                                    {
+                                        <span class="badge bg-success">İşveren</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-info text-dark">Öğrenci/Mezun</span>
+                                    }
+                                </td>
+                                <td>@user.RegisterTime.ToShortDateString()</td>
+                                <td class="text-end pe-4">
+                                    @if (user.Role != "Admin") // Admin kendini silemesin
+                                    {
+                                        <form asp-action="DeleteUser" asp-route-id="@user.UserId" method="post" class="d-inline" onsubmit="return confirmDelete(this);">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Kullanıcıyı Sil">
+                                                <i class="fa-solid fa-trash"></i> Sil
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmDelete(form) {
+        // SweetAlert2 ile şık bir onay kutusu
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: "Bu kullanıcı ve tüm verileri kalıcı olarak silinecek!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Evet, Sil!',
+            cancelButtonText: 'İptal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit(); // Onay verildiyse formu gönder
+            }
+        });
+        return false; // Formun otomatik gönderilmesini engelle (JS halledecek)
+    }
+</script>

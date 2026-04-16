@@ -9,7 +9,7 @@ namespace MezuniyetPlatformu.Entities
     public class Company
     {
         public int CompanyId { get; set; }
-        public string CompanyName { get; set; }
+        public string? CompanyName { get; set; }
         public string? Website { get; set; }
         public string? LogoURL { get; set; }
         public string? Sector { get; set; }

@@ -1,68 +1,134 @@
 ﻿@model MezuniyetPlatformu.Web.ViewModels.CreateJobPostViewModel
 @{
-    ViewData["Title"] = "Yeni İş İlanı Oluştur";
+    ViewData["Title"] = "İlan Oluştur";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card shadow-sm">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Yeni İş İlanı Yayınla</h4>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold m-0 text-dark">Yeni İlan Oluştur</h3>
+                <a asp-action="MyPosts" class="btn btn-outline-secondary rounded-pill btn-sm hover-lift">
+                    <i class="fa-solid fa-arrow-left me-1"></i> İlanlarıma Dön
+                </a>
             </div>
-            <div class="card-body">
-                <form asp-action="Create" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                    <div class="mb-3">
-                        <label asp-for="Title" class="form-label fw-bold"></label>
-                        <input asp-for="Title" class="form-control" placeholder="Örn: Junior .NET Geliştirici" />
-                        <span asp-validation-for="Title" class="text-danger"></span>
-                    </div>
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white p-4">
+                    <h5 class="mb-0 fw-bold"><i class="fa-solid fa-pencil me-2"></i> İlan Detaylarını Giriniz</h5>
+                </div>
+                <div class="card-body p-5 bg-white">
+                    <form asp-action="Create" method="post">
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="JobType" class="form-label fw-bold"></label>
-                            <select asp-for="JobType" class="form-select">
-                                <option value="">Seçiniz...</option>
-                                <option value="Tam Zamanlı">Tam Zamanlı</option>
-                                <option value="Yarı Zamanlı">Yarı Zamanlı</option>
-                                <option value="Staj">Staj</option>
-                                <option value="Uzaktan">Uzaktan</option>
-                            </select>
-                            <span asp-validation-for="JobType" class="text-danger"></span>
+                        <div class="mb-4">
+                            <label asp-for="Title" class="form-label fw-bold text-dark small text-uppercase ls-1">İlan Başlığı</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-heading text-muted"></i></span>
+                                <input asp-for="Title" class="form-control form-control-lg bg-light border-start-0" placeholder="Örn: Senior Backend Developer" />
+                            </div>
+                            <span asp-validation-for="Title" class="text-danger small fw-bold"></span>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Location" class="form-label fw-bold"></label>
-                            <input asp-for="Location" class="form-control" placeholder="Örn: İstanbul / Hibrit" />
-                            <span asp-validation-for="Location" class="text-danger"></span>
+
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="JobType" class="form-label fw-bold text-dark small text-uppercase ls-1">Çalışma Şekli</label>
+                                <select asp-for="JobType" class="form-select bg-light h-100 py-2">
+                                    <option value="">Seçiniz...</option>
+                                    <option value="Tam Zamanlı">Tam Zamanlı</option>
+                                    <option value="Yarı Zamanlı">Yarı Zamanlı</option>
+                                    <option value="Uzaktan">Uzaktan (Remote)</option>
+                                    <option value="Staj">Staj</option>
+                                    <option value="Hibrit">Hibrit</option>
+                                </select>
+                                <span asp-validation-for="JobType" class="text-danger small fw-bold"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Location" class="form-label fw-bold text-dark small text-uppercase ls-1">Konum</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-location-dot text-muted"></i></span>
+                                    <input asp-for="Location" class="form-control bg-light border-start-0" placeholder="Şehir, İlçe" />
+                                </div>
+                                <span asp-validation-for="Location" class="text-danger small fw-bold"></span>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label asp-for="Deadline" class="form-label fw-bold text-dark small text-uppercase ls-1">Son Başvuru Tarihi</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="fa-regular fa-calendar-days text-muted"></i></span>
+                                    <input asp-for="Deadline" class="form-control bg-light border-start-0" type="date" />
+                                </div>
+                                <span asp-validation-for="Deadline" class="text-danger small fw-bold"></span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label asp-for="Deadline" class="form-label fw-bold"></label>
-                        <input asp-for="Deadline" class="form-control" />
-                        <span asp-validation-for="Deadline" class="text-danger"></span>
-                    </div>
+                        <div class="mb-5">
+                            <label asp-for="Description" class="form-label fw-bold text-dark small text-uppercase ls-1">İş Tanımı ve Aranan Nitelikler</label>
+                            <textarea asp-for="Description" class="form-control rich-text" rows="8"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small fw-bold"></span>
+                            <div class="form-text mt-2"><i class="fa-solid fa-circle-info me-1 text-primary"></i> Adayların dikkatini çekmek için detaylı bir açıklama yazın.</div>
+                        </div>
 
-                    <div class="mb-3">
-                        <label asp-for="Description" class="form-label fw-bold"></label>
-                        <textarea asp-for="Description" class="form-control" rows="6" placeholder="İş tanımı ve aranan nitelikler..."></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
+                        <hr class="my-4 text-muted opacity-25">
 
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-success btn-lg">İlanı Yayınla</button>
-                        <a asp-action="Index" class="btn btn-secondary">İptal</a>
-                    </div>
-                </form>
+                        <div class="d-flex justify-content-end gap-3">
+                            <a asp-action="MyPosts" class="btn btn-light btn-lg px-4 border text-muted fw-bold">İptal</a>
+                            <button type="submit" class="btn btn-primary btn-lg px-5 fw-bold shadow-sm hover-scale">
+                                <i class="fa-solid fa-paper-plane me-2"></i> İlanı Yayınla
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
             </div>
+
         </div>
     </div>
 </div>
+
+<style>
+    .ls-1 {
+        letter-spacing: 1px;
+    }
+
+    .hover-scale:hover {
+        transform: scale(1.02);
+        transition: 0.2s;
+    }
+
+    .form-control:focus, .form-select:focus {
+        box-shadow: none;
+        border-color: var(--bs-primary);
+    }
+
+    .input-group-text {
+        border-right: 0;
+    }
+</style>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        $(document).ready(function() {
+            if($('.rich-text').length > 0 && typeof $.fn.summernote !== 'undefined') {
+                $('.rich-text').summernote({
+                    placeholder: 'İş tanımını, sorumlulukları ve aranan nitelikleri buraya yazın...',
+                    tabsize: 2,
+                    height: 250,
+                    toolbar: [
+                      ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
+                      ['para', ['ul', 'ol', 'paragraph']],
+                      ['insert', ['link']],
+                      ['view', ['fullscreen']]
+                    ],
+                    lang: 'tr-TR' // Türkçe dil desteği varsa
+                });
+            }
+        });
+    </script>
 }

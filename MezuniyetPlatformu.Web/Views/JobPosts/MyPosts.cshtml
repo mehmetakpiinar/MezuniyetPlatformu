@@ -1,0 +1,101 @@
+﻿@model List<MezuniyetPlatformu.Web.ViewModels.JobPostsViewModel>
+@{
+    ViewData["Title"] = "İlanlarım";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold m-0 text-dark">İlanlarım</h2>
+            <p class="text-muted m-0">Yayınladığınız tüm ilanları buradan yönetebilirsiniz.</p>
+        </div>
+        <a href="/JobPosts/Create" class="btn btn-primary rounded-pill fw-bold px-4 shadow-sm hover-lift">
+            <i class="fa-solid fa-plus me-2"></i> Yeni İlan
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 bg-white rounded shadow-sm border border-light">
+            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                <i class="fa-regular fa-folder-open fa-2x text-muted opacity-50"></i>
+            </div>
+            <h5 class="fw-bold text-dark">Henüz ilan yayınlamadınız.</h5>
+            <p class="text-secondary small mb-4">İlk ilanınızı oluşturarak adaylarla buluşun.</p>
+            <a href="/JobPosts/Create" class="btn btn-outline-primary btn-sm rounded-pill px-4">Hemen Başla</a>
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-secondary small text-uppercase">
+                        <tr>
+                            <th class="ps-4 py-3" style="width: 35%;">İlan Başlığı</th>
+                            <th style="width: 15%;">Tür</th>
+                            <th style="width: 15%;">Durum</th>
+                            <th class="text-center" style="width: 15%;">Başvurular</th>
+                            <th class="text-end pe-4" style="width: 20%;">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-bold text-dark">@item.Title</div>
+                                    <small class="text-muted">
+                                        <i class="fa-regular fa-calendar me-1"></i> @item.PublishedDate.ToString("dd MMM yyyy")
+                                    </small>
+                                </td>
+                                <td>
+                                    @if (item.JobType == "Uzaktan")
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle rounded-pill">Remote</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-light text-dark border rounded-pill">@item.JobType</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle rounded-pill">
+                                            <i class="fa-solid fa-circle fa-2xs me-1"></i> Yayında
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle rounded-pill">Pasif</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <a href="/JobPosts/ManageApplications/@item.JobPostId" class="btn btn-warning btn-sm fw-bold text-dark rounded-pill px-3 shadow-sm">
+                                        <i class="fa-solid fa-users me-1"></i> Başvurular
+                                    </a>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group shadow-sm rounded">
+                                        <a href="/JobPosts/Edit/@item.JobPostId" class="btn btn-light btn-sm border text-secondary" title="Düzenle">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@item.JobPostId" method="post" class="d-inline" onsubmit="return confirm('Bu ilanı silmek istediğinize emin misiniz?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-light btn-sm border text-danger" title="Sil" style="border-left: 0;">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

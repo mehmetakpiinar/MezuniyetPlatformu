@@ -30,5 +30,8 @@ namespace MezuniyetPlatformu.Entities
 
         [ForeignKey("CompanyId")]
         public Company Company { get; set; }
+
+
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }
